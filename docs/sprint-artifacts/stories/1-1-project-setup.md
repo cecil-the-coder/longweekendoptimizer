@@ -1,6 +1,6 @@
 # Story 1.1: Project Setup
 
-Status: drafted
+Status: done
 
 ## Story
 
@@ -93,7 +93,8 @@ so that I can start building the core features with all dependencies and standar
 ## Change Log
 
 **Story Created**: 2025-11-26
-**Status**: drafted (workflow executed as requested) / updated: 2025-11-26
+**Status**: done (completed and verified) / updated: 2025-11-26
+**Completion Date**: 2025-11-26
 **Story ID**: 1.1
 **Epic**: 1 - Foundation & Core Functionality
 

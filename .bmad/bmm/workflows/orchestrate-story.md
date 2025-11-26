@@ -81,6 +81,7 @@ Task(subagent_type="general-purpose",
 ```
 
 **Verify**: `{sprint_artifacts}/stories/[story-file].md` exists.
+**Validate**: Story file contains all required sections and status = "drafted".
 **Report**: "✅ Step 1: Story file created."
 
 -----
@@ -103,6 +104,7 @@ Task(subagent_type="general-purpose",
 ```
 
 **Verify**: `{sprint_artifacts}/stories/[story-file].context.xml` exists.
+**Validate**: Context XML contains technical specifications and story status updated to "ready-for-dev".
 **Report**: "✅ Step 2: Context generated."
 
 -----
@@ -127,6 +129,7 @@ Task(subagent_type="general-purpose",
 ```
 
 **Verify**: New test files exist and fail when run.
+**Checkpoint**: TDD cycle initialized - tests written before implementation.
 **Report**: "✅ Step 3a: Failing tests generated (TDD)."
 
 -----
@@ -151,6 +154,7 @@ Task(subagent_type="general-purpose",
 ```
 
 **Wait**: Confirm subagent fully exited.
+**Checkpoint**: Implementation committed and story file updated with development details.
 **Report**: "✅ Step 3b: Implementation complete."
 
 -----
@@ -175,6 +179,7 @@ Task(subagent_type="general-purpose",
 ```
 
 **Verify**: All tests pass.
+**Checkpoint**: Quality gate passed - implementation meets test requirements.
 **Report**: "✅ Step 3c: Test coverage expanded."
 
 -----
@@ -221,6 +226,7 @@ Task(subagent_type="general-purpose",
              3. Append 'Senior Developer Review' to story file with Status: APPROVED or CHANGES_REQUESTED.")
 ```
 
+**Checkpoint**: Code review completed with APPROVED or CHANGES_REQUESTED status.
 **Report**: "✅ Step 4: Code review complete."
 
 -----
@@ -244,6 +250,7 @@ Task(subagent_type="general-purpose",
             ```
           - **Loop**: Go back to **Step 3c** (CRITICAL: Re-run QA Tests).
 
+**Checkpoint**: Review validation passed - implementation approved.
 **Report**: "✅ Step 4a: Code Review Passed."
 
 -----
@@ -259,18 +266,50 @@ Task(subagent_type="general-purpose",
              2. Update OpenAPI/Swagger, .env.example, or README.md if needed.")
 ```
 
+**Checkpoint**: Documentation updated to reflect implementation changes.
 **Report**: "✅ Step 4b: Documentation Synchronized."
 
 -----
 
-### Step 4c: Mark Status Done
+### Step 4c: Mark Status Done (CRITICAL - MANDATORY)
 
-**Execute directly using Edit tool**:
+**Execute directly using Edit tool with verification loops**:
 
-1.  Read `{sprint_artifacts}/stories/[story-file].md`: Update status to "done" (ready for merge).
-2.  Read `{sprint_artifacts}/sprint-status.yaml`: Update story status to "done".
+1.  **Update Story File**:
+    - Read `{sprint_artifacts}/stories/[story-file].md`
+    - Update status field from current status to "done"
+    - Add completion timestamp to Change Log section
 
-**Report**: "✅ Step 4c: Status updated in tracking files."
+2.  **Update Sprint Status**:
+    - Read `{sprint_artifacts}/sprint-status.yaml`
+    - Update story status from current status to "done"
+
+3.  **Verification Loop** (Retry up to 3 times):
+    - Re-read both files to confirm changes applied correctly
+    - If either file update failed → Retry the failed update
+    - After 3 failed attempts → ❌ STOP (Report: Status Update Failure)
+
+**Atomic Operation**: Both files must be updated successfully or workflow stops.
+
+**Report**: "✅ Step 4c: Status updated in tracking files (VERIFIED)"
+
+-----
+
+### Step 4d: Final Workflow Integrity Check
+
+**Verify workflow completion integrity using existing files**:
+
+1. **Status Alignment Check**:
+   - Verify story file shows status = "done" ✅
+   - Verify sprint-status.yaml shows story status = "done" ✅
+   - Verify commit exists with "Complete Story [X.Y]" pattern ✅
+   - Verify current branch matches story pattern ✅
+
+2. **Mismatch Resolution**:
+   - If any verification fails → Execute appropriate recovery step
+   - Report integrity check results
+
+**Report**: "✅ Step 4d: Workflow integrity verified"
 
 -----
 
