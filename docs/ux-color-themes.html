@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long Weekend Optimizer - Color Theme Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .theme-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .theme-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .theme-header h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .theme-personality {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .theme-best-for {
+            font-size: 0.85rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .palette-section {
+            padding: 1.5rem;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .color-swatch {
+            text-align: center;
+        }
+
+        .color-box {
+            height: 80px;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .color-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .color-hex {
+            font-size: 0.7rem;
+            color: #666;
+            font-family: 'Courier New', monospace;
+        }
+
+        .components-section {
+            padding: 1.5rem;
+            background: #fafafa;
+        }
+
+        .components-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        /* Theme 1: Strategic Blue */
+        .theme-1-primary { background: #2563eb; }
+        .theme-1-secondary { background: #64748b; }
+        .theme-1-success { background: #10b981; }
+        .theme-1-warning { background: #f59e0b; }
+        .theme-1-error { background: #ef4444; }
+        .theme-1-bg { background: #ffffff; }
+        .theme-1-bg-subtle { background: #f8fafc; }
+        .theme-1-text { background: #0f172a; }
+        .theme-1-text-muted { background: #64748b; }
+        .theme-1-border { background: #e2e8f0; }
+
+        /* Theme 2: Modern Teal */
+        .theme-2-primary { background: #0d9488; }
+        .theme-2-secondary { background: #475569; }
+        .theme-2-success { background: #22c55e; }
+        .theme-2-warning { background: #eab308; }
+        .theme-2-error { background: #dc2626; }
+        .theme-2-bg { background: #ffffff; }
+        .theme-2-bg-subtle { background: #f0fdfa; }
+        .theme-2-text { background: #0f172a; }
+        .theme-2-text-muted { background: #64748b; }
+        .theme-2-border { background: #ccfbf1; }
+
+        /* Theme 3: Professional Purple */
+        .theme-3-primary { background: #7c3aed; }
+        .theme-3-secondary { background: #6b7280; }
+        .theme-3-success { background: #059669; }
+        .theme-3-warning { background: #d97706; }
+        .theme-3-error { background: #dc2626; }
+        .theme-3-bg { background: #ffffff; }
+        .theme-3-bg-subtle { background: #faf5ff; }
+        .theme-3-text { background: #18181b; }
+        .theme-3-text-muted { background: #71717a; }
+        .theme-3-border { background: #e9d5ff; }
+
+        /* Theme 4: Energetic Orange */
+        .theme-4-primary { background: #ea580c; }
+        .theme-4-secondary { background: #57534e; }
+        .theme-4-success { background: #16a34a; }
+        .theme-4-warning { background: #ca8a04; }
+        .theme-4-error { background: #b91c1c; }
+        .theme-4-bg { background: #ffffff; }
+        .theme-4-bg-subtle { background: #fff7ed; }
+        .theme-4-text { background: #1c1917; }
+        .theme-4-text-muted { background: #78716c; }
+        .theme-4-border { background: #fed7aa; }
+
+        /* Component Examples */
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .theme-1 .btn-primary { background: #2563eb; color: white; }
+        .theme-1 .btn-secondary { background: #e2e8f0; color: #0f172a; }
+        .theme-1 .card { border: 1px solid #e2e8f0; background: white; }
+        .theme-1 .alert-success { background: #d1fae5; color: #065f46; border-left: 3px solid #10b981; }
+        .theme-1 .badge { background: #dbeafe; color: #1e40af; }
+
+        .theme-2 .btn-primary { background: #0d9488; color: white; }
+        .theme-2 .btn-secondary { background: #ccfbf1; color: #0f172a; }
+        .theme-2 .card { border: 1px solid #ccfbf1; background: white; }
+        .theme-2 .alert-success { background: #d1fae5; color: #065f46; border-left: 3px solid #22c55e; }
+        .theme-2 .badge { background: #ccfbf1; color: #115e59; }
+
+        .theme-3 .btn-primary { background: #7c3aed; color: white; }
+        .theme-3 .btn-secondary { background: #e9d5ff; color: #18181b; }
+        .theme-3 .card { border: 1px solid #e9d5ff; background: white; }
+        .theme-3 .alert-success { background: #d1fae5; color: #065f46; border-left: 3px solid #059669; }
+        .theme-3 .badge { background: #e9d5ff; color: #6b21a8; }
+
+        .theme-4 .btn-primary { background: #ea580c; color: white; }
+        .theme-4 .btn-secondary { background: #fed7aa; color: #1c1917; }
+        .theme-4 .card { border: 1px solid #fed7aa; background: white; }
+        .theme-4 .alert-success { background: #d1fae5; color: #065f46; border-left: 3px solid #16a34a; }
+        .theme-4 .badge { background: #fed7aa; color: #9a3412; }
+
+        .card {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .input-example {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-example:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Long Weekend Optimizer - Color Theme Explorer</h1>
+    <p class="subtitle">Strategic Efficiency • Mobile-First • Professional Utility</p>
+
+    <div class="themes-grid">
+        <!-- Theme 1: Strategic Blue -->
+        <div class="theme-card theme-1">
+            <div class="theme-header">
+                <h2>1. Strategic Blue</h2>
+                <p class="theme-personality">Professional • Trustworthy • Efficient</p>
+                <p class="theme-best-for">Best for: Traditional professionals, enterprise users, financial planning context</p>
+            </div>
+
+            <div class="palette-section">
+                <h3>Color Palette</h3>
+                <div class="palette-grid">
+                    <div class="color-swatch">
+                        <div class="color-box theme-1-primary"></div>
+                        <div class="color-label">Primary</div>
+                        <div class="color-hex">#2563eb</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-1-secondary"></div>
+                        <div class="color-label">Secondary</div>
+                        <div class="color-hex">#64748b</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-1-success"></div>
+                        <div class="color-label">Success</div>
+                        <div class="color-hex">#10b981</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-1-warning"></div>
+                        <div class="color-label">Warning</div>
+                        <div class="color-hex">#f59e0b</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-1-error"></div>
+                        <div class="color-label">Error</div>
+                        <div class="color-hex">#ef4444</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-1-bg"></div>
+                        <div class="color-label">Background</div>
+                        <div class="color-hex">#ffffff</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-1-bg-subtle"></div>
+                        <div class="color-label">BG Subtle</div>
+                        <div class="color-hex">#f8fafc</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-1-border"></div>
+                        <div class="color-label">Border</div>
+                        <div class="color-hex">#e2e8f0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="components-section">
+                <h3>Live Component Examples</h3>
+                <button class="btn btn-primary">Add Holiday</button>
+                <button class="btn btn-secondary">Cancel</button>
+                <br><br>
+                <input type="text" class="input-example" placeholder="Holiday name (e.g., Thanksgiving)" />
+                <div class="card">
+                    <strong>Thanksgiving • Thu, Nov 27</strong><br>
+                    <small style="color: #64748b;">Take Friday, Nov 28 off → 4-day weekend</small><br>
+                    <span class="badge">1 PTO day</span>
+                </div>
+                <div class="alert-success">
+                    ✓ Holiday added successfully
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 2: Modern Teal -->
+        <div class="theme-card theme-2">
+            <div class="theme-header">
+                <h2>2. Modern Teal</h2>
+                <p class="theme-personality">Fresh • Balanced • Approachable</p>
+                <p class="theme-best-for">Best for: Modern teams, tech-savvy users, growth-oriented contexts</p>
+            </div>
+
+            <div class="palette-section">
+                <h3>Color Palette</h3>
+                <div class="palette-grid">
+                    <div class="color-swatch">
+                        <div class="color-box theme-2-primary"></div>
+                        <div class="color-label">Primary</div>
+                        <div class="color-hex">#0d9488</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-2-secondary"></div>
+                        <div class="color-label">Secondary</div>
+                        <div class="color-hex">#475569</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-2-success"></div>
+                        <div class="color-label">Success</div>
+                        <div class="color-hex">#22c55e</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-2-warning"></div>
+                        <div class="color-label">Warning</div>
+                        <div class="color-hex">#eab308</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-2-error"></div>
+                        <div class="color-label">Error</div>
+                        <div class="color-hex">#dc2626</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-2-bg"></div>
+                        <div class="color-label">Background</div>
+                        <div class="color-hex">#ffffff</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-2-bg-subtle"></div>
+                        <div class="color-label">BG Subtle</div>
+                        <div class="color-hex">#f0fdfa</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-2-border"></div>
+                        <div class="color-label">Border</div>
+                        <div class="color-hex">#ccfbf1</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="components-section">
+                <h3>Live Component Examples</h3>
+                <button class="btn btn-primary">Add Holiday</button>
+                <button class="btn btn-secondary">Cancel</button>
+                <br><br>
+                <input type="text" class="input-example" placeholder="Holiday name (e.g., Thanksgiving)" />
+                <div class="card">
+                    <strong>Thanksgiving • Thu, Nov 27</strong><br>
+                    <small style="color: #475569;">Take Friday, Nov 28 off → 4-day weekend</small><br>
+                    <span class="badge">1 PTO day</span>
+                </div>
+                <div class="alert-success">
+                    ✓ Holiday added successfully
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 3: Professional Purple -->
+        <div class="theme-card theme-3">
+            <div class="theme-header">
+                <h2>3. Professional Purple</h2>
+                <p class="theme-personality">Creative • Strategic • Premium</p>
+                <p class="theme-best-for">Best for: Creative professionals, design-forward teams, premium positioning</p>
+            </div>
+
+            <div class="palette-section">
+                <h3>Color Palette</h3>
+                <div class="palette-grid">
+                    <div class="color-swatch">
+                        <div class="color-box theme-3-primary"></div>
+                        <div class="color-label">Primary</div>
+                        <div class="color-hex">#7c3aed</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-3-secondary"></div>
+                        <div class="color-label">Secondary</div>
+                        <div class="color-hex">#6b7280</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-3-success"></div>
+                        <div class="color-label">Success</div>
+                        <div class="color-hex">#059669</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-3-warning"></div>
+                        <div class="color-label">Warning</div>
+                        <div class="color-hex">#d97706</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-3-error"></div>
+                        <div class="color-label">Error</div>
+                        <div class="color-hex">#dc2626</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-3-bg"></div>
+                        <div class="color-label">Background</div>
+                        <div class="color-hex">#ffffff</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-3-bg-subtle"></div>
+                        <div class="color-label">BG Subtle</div>
+                        <div class="color-hex">#faf5ff</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-3-border"></div>
+                        <div class="color-label">Border</div>
+                        <div class="color-hex">#e9d5ff</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="components-section">
+                <h3>Live Component Examples</h3>
+                <button class="btn btn-primary">Add Holiday</button>
+                <button class="btn btn-secondary">Cancel</button>
+                <br><br>
+                <input type="text" class="input-example" placeholder="Holiday name (e.g., Thanksgiving)" />
+                <div class="card">
+                    <strong>Thanksgiving • Thu, Nov 27</strong><br>
+                    <small style="color: #6b7280;">Take Friday, Nov 28 off → 4-day weekend</small><br>
+                    <span class="badge">1 PTO day</span>
+                </div>
+                <div class="alert-success">
+                    ✓ Holiday added successfully
+                </div>
+            </div>
+        </div>
+
+        <!-- Theme 4: Energetic Orange -->
+        <div class="theme-card theme-4">
+            <div class="theme-header">
+                <h2>4. Energetic Orange</h2>
+                <p class="theme-personality">Energetic • Action-Oriented • Bold</p>
+                <p class="theme-best-for">Best for: Startups, action-focused users, memorable branding</p>
+            </div>
+
+            <div class="palette-section">
+                <h3>Color Palette</h3>
+                <div class="palette-grid">
+                    <div class="color-swatch">
+                        <div class="color-box theme-4-primary"></div>
+                        <div class="color-label">Primary</div>
+                        <div class="color-hex">#ea580c</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-4-secondary"></div>
+                        <div class="color-label">Secondary</div>
+                        <div class="color-hex">#57534e</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-4-success"></div>
+                        <div class="color-label">Success</div>
+                        <div class="color-hex">#16a34a</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-4-warning"></div>
+                        <div class="color-label">Warning</div>
+                        <div class="color-hex">#ca8a04</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-4-error"></div>
+                        <div class="color-label">Error</div>
+                        <div class="color-hex">#b91c1c</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-4-bg"></div>
+                        <div class="color-label">Background</div>
+                        <div class="color-hex">#ffffff</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-4-bg-subtle"></div>
+                        <div class="color-label">BG Subtle</div>
+                        <div class="color-hex">#fff7ed</div>
+                    </div>
+                    <div class="color-swatch">
+                        <div class="color-box theme-4-border"></div>
+                        <div class="color-label">Border</div>
+                        <div class="color-hex">#fed7aa</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="components-section">
+                <h3>Live Component Examples</h3>
+                <button class="btn btn-primary">Add Holiday</button>
+                <button class="btn btn-secondary">Cancel</button>
+                <br><br>
+                <input type="text" class="input-example" placeholder="Holiday name (e.g., Thanksgiving)" />
+                <div class="card">
+                    <strong>Thanksgiving • Thu, Nov 27</strong><br>
+                    <small style="color: #57534e;">Take Friday, Nov 28 off → 4-day weekend</small><br>
+                    <span class="badge">1 PTO day</span>
+                </div>
+                <div class="alert-success">
+                    ✓ Holiday added successfully
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 3rem; color: #666;">
+        <p><strong>Recommendation:</strong> Theme 1 (Strategic Blue) or Theme 2 (Modern Teal) best match the "strategic efficiency" goal.</p>
+        <p>Blue conveys trust and professionalism. Teal adds freshness while maintaining approachability.</p>
+    </div>
+</body>
+</html>

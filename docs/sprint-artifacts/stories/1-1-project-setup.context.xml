@@ -1,0 +1,173 @@
+<story-context id="1-1-project-setup" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1</storyId>
+    <title>Project Setup</title>
+    <status>ready-for-dev</status>
+    <generatedAt>2025-11-26</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>/workspace/docs/sprint-artifacts/stories/1-1-project-setup.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>developer</asA>
+    <iWant>a foundational project structure</iWant>
+    <soThat>I can start building the core features with all dependencies and standards in place</soThat>
+    <tasks>- [ ] Initialize Vite + React + TypeScript project (AC: 1)
+  - [ ] Run `npm create vite@latest . -- --template react-ts` to create project structure
+  - [ ] Install dependencies with `npm install`
+  - [ ] Verify project builds successfully with `npm run build`
+  - [ ] Start development server with `npm run dev` to confirm setup works
+- [ ] Configure ESLint and Prettier for code quality (AC: 2, 3)
+  - [ ] Install ESLint with TypeScript and React support dependencies
+  - [ ] Create .eslintrc.json with TypeScript, React, and recommended rules
+  - [ ] Install and configure Prettier with code formatting standards
+  - [ ] Integrate Prettier with ESLint for consistent code style
+  - [ ] Verify linting works with `npm run lint` command
+- [ ] Create Hello World component (AC: 4)
+  - [ ] Create basic React component with TypeScript props interface
+  - [ ] Implement HelloWorld component following PascalCase naming [Source: docs/architecture/component-standards.md]
+  - [ ] Add component to main App.tsx for rendering
+  - [ ] Verify component renders on main page in development mode
+- [ ] Set up testing framework (AC: 5)
+  - [ ] Install Vitest and related testing dependencies
+  - [ ] Configure vitest.config.ts with TypeScript and React support
+  - [ ] Create basic passing test for HelloWorld component [Source: docs/architecture/testing-requirements.md]
+  - [ ] Verify tests run successfully with `npm test` command</tasks>
+  </story>
+
+  <acceptanceCriteria>1. The project is initialized as a Vite + React + TypeScript static web application [Source: docs/sprint-artifacts/tech-spec-epic-1.md#Story-1.1-Project-Setup]
+2. ESLint is configured and functional with TypeScript and React rules [Source: docs/sprint-artifacts/tech-spec-epic-1.md#Story-1.1-Project-Setup]
+3. Prettier is configured and integrates with ESLint [Source: docs/sprint-artifacts/tech-spec-epic-1.md#Story-1.1-Project-Setup]
+4. A simple "Hello World" component renders on the main page [Source: docs/sprint-artifacts/tech-spec-epic-1.md#Story-1.1-Project-Setup]
+5. Vitest is installed and configured with a basic passing test [Source: docs/sprint-artifacts/tech-spec-epic-1.md#Story-1.1-Project-Setup]</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation & Core Functionality</title>
+        <section>System Architecture Alignment</section>
+        <snippet>This epic aligns with the established frontend architecture by implementing: React 18 + TypeScript: Functional components with strict typing for robust date logic. Vite Build System: Fast development server and optimized production builds. Component Structure: Follows `/src/components`, `/src/context`, `/src/services`, `/src/utils` organization.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation & Core Functionality</title>
+        <section>Dependencies and Integrations</section>
+        <snippet>Core Framework Dependencies: Framework - react ^18.3.1, react-dom ^18.3.1. Language - typescript ^5.6.3. Build Tool - vite ^5.4.8. Testing - vitest ^2.1.4. Development Tooling Dependencies: ESLint with TypeScript and React rules, Prettier for formatting.</snippet>
+      </doc>
+      <doc>
+        <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation & Core Functionality</title>
+        <section>Acceptance Criteria (Authoritative)</section>
+        <snippet>Story 1.1: Project Setup. 1. The project is initialized as a Vite + React + TypeScript static web application. 2. ESLint is configured and functional with TypeScript and React rules. 3. Prettier is configured and integrates with ESLint. 4. A simple "Hello World" component renders on the main page. 5. Vitest is installed and configured with a basic passing test.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture/project-structure.md</path>
+        <title>Project Structure</title>
+        <section>Directory Layout</section>
+        <snippet>The project will follow a standard Vite + React + TS structure with /src/components, /src/context, /src/services, /src/utils organization. All logic must be client-side.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture/component-standards.md</path>
+        <title>Component Standards</title>
+        <section>Naming Conventions</section>
+        <snippet>Components: PascalCase (e.g., HolidayForm.tsx). All components should be React functional components using TypeScript with proper props interfaces.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture/testing-requirements.md</path>
+        <title>Testing Requirements</title>
+        <section>Component Test Template</section>
+        <snippet>We will use Vitest and React Testing Library for all unit tests. Coverage Goals: Aim for 100% coverage on dateLogic.ts. Test Structure: Arrange-Act-Assert.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/App.tsx</path>
+        <kind>root-component</kind>
+        <symbol>App</symbol>
+        <lines>4-11</lines>
+        <reason>Already implemented - renders HelloWorld component in header, provides basic application structure</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/HelloWorld.tsx</path>
+        <kind>component</kind>
+        <symbol>HelloWorld</symbol>
+        <lines>1-23</lines>
+        <reason>Already implemented - functional component with TypeScript interface, demonstrates PascalCase naming, includes props and state</reason>
+      </artifact>
+      <artifact>
+        <path>src/components/__tests__/HelloWorld.test.tsx</path>
+        <kind>test</kind>
+        <symbol>HelloWorld tests</symbol>
+        <lines>1-39</lines>
+        <reason>Already implemented - comprehensive vitest tests using React Testing Library, covers rendering, props, and user interactions</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <framework name="React" version="^18.2.0" purpose="UI library with hooks support" />
+      <framework name="React DOM" version="^18.2.0" purpose="Browser DOM rendering" />
+      <framework name="TypeScript" version="^5.2.2" purpose="Type safety and development experience" />
+      <framework name="Vite" version="^5.2.0" purpose="Fast development server and bundler" />
+
+      <dependency name="Vitest" version="^1.4.0" purpose="Unit testing framework with TypeScript support" />
+      <dependency name="React Testing Library" version="^14.2.1" purpose="React component testing utilities" />
+
+      <dev-tool name="ESLint" version="^8.57.0" purpose="Code quality and style enforcement" />
+      <dev-tool name="@typescript-eslint/eslint-plugin" version="^7.2.0" purpose="TypeScript linting rules" />
+      <dev-tool name="@typescript-eslint/parser" version="^7.2.0" purpose="TypeScript parsing for ESLint" />
+      <dev-tool name="eslint-plugin-react-hooks" version="^4.6.0" purpose="React hooks linting rules" />
+      <dev-tool name="Prettier" version="^3.2.5" purpose="Code formatting and consistency" />
+
+      <type-checker name="@types/react" version="^18.2.66" purpose="React type definitions" />
+      <type-checker name="@types/react-dom" version="^18.2.22" purpose="React DOM type definitions" />
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint type="architecture">React 18 + TypeScript with functional components and strict typing</constraint>
+    <constraint type="project-structure">Follow /src/components, /src/context, /src/services, /src/utils organization</constraint>
+    <constraint type="build-system">Vite as build tool and development server</constraint>
+    <constraint type="component-standards">Use PascalCase naming for components, functional components with TypeScript interfaces</constraint>
+    <constraint type="linting">ESLint with TypeScript and React rules, integrated with Prettier</constraint>
+    <constraint type="testing">Vitest with React Testing Library for component testing, Follow Arrange-Act-Assert pattern</constraint>
+    <constraint type="client-side">All logic must be client-side only, no backend dependencies</constraint>
+  </constraints>
+  <interfaces>
+    <interface name="HelloWorld Props" kind="TypeScript interface" signature="interface HelloWorldProps { name?: string; }" path="src/components/HelloWorld.tsx" />
+    <interface name="HelloWorld Component" kind="React functional component" signature="function HelloWorld({ name = 'World' }: HelloWorldProps): React.ReactElement" path="src/components/HelloWorld.tsx" />
+    <interface name="App Component" kind="React functional component" signature="function App(): React.ReactElement" path="src/App.tsx" />
+  </interfaces>
+  <tests>
+    <standards>Vitest unit testing framework with TypeScript support and React Testing Library for component testing. Coverage target: 100% on business logic modules. Tests use Arrange-Act-Assert structure and focus on component behavior and user interactions.</standards>
+    <locations>Unit tests in src/**/*.test.ts files, component tests alongside components in __tests__ directories, test configuration in vitest.config.ts</locations>
+    <ideas>
+      <test-idea ac-id="1" description="Verify Vite project setup and TypeScript configuration">
+        <test-case>npm run dev should start development server without TypeScript errors</test-case>
+        <test-case>build command should create optimized production build</test-case>
+        <test-case>TypeScript should compile without errors</test-case>
+      </test-idea>
+      <test-idea ac-id="2" description="Test ESLint configuration enforces TypeScript and React rules">
+        <test-case>npm run lint should pass on properly formatted code</test-case>
+        <test-case>npm run lint should fail on intentional code style violations</test-case>
+        <test-case>React hooks rules should be enforced correctly</test-case>
+      </test-idea>
+      <test-idea ac-id="3" description="Verify Prettier formatting is integrated and working">
+        <test-case>npm run lint:fix should format code according to project standards</test-case>
+        <test-case>Preconfigured Prettier rules should be applied consistently</test-case>
+      </test-idea>
+      <test-idea ac-id="4" description="Test Hello World component renders and functions correctly">
+        <test-case>Component should render default greeting "Hello, World!"</test-case>
+        <test-case>Component should accept custom name prop and render greeting</test-case>
+        <test-case>Component should display welcome message for Long Weekend Optimizer</test-case>
+        <test-case>Count button should increment state when clicked</test-case>
+        <test-case>Component should follow functional component pattern with TypeScript</test-case>
+      </test-idea>
+      <test-idea ac-id="5" description="Verify Vitest testing framework is properly configured">
+        <test-case>npm test should run all tests without configuration errors</test-case>
+        <test-case>Tests should pass with proper React Testing Library setup</test-case>
+        <test-case>TypeScript types should be resolved correctly in test files</test-case>
+      </test-idea>
+    </ideas>
+  </tests>
+</story-context>
