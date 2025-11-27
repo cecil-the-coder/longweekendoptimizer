@@ -11,13 +11,19 @@ import { HolidayProvider } from '../../context/HolidayContext';
 // Mock the useHolidays hook to isolate component testing
 const mockAddHoliday = vi.fn();
 const mockDeleteHoliday = vi.fn();
+const mockClearStorageError = vi.fn();
 let mockHolidays: any[] = [];
+let mockStorageError: any = null;
+let mockIsLocalStorageAvailable = true;
 
 vi.mock('../../hooks/useHolidays', () => ({
   useHolidays: () => ({
     addHoliday: mockAddHoliday,
     deleteHoliday: mockDeleteHoliday,
-    holidays: mockHolidays
+    holidays: mockHolidays,
+    storageError: mockStorageError,
+    clearStorageError: mockClearStorageError,
+    isLocalStorageAvailable: mockIsLocalStorageAvailable
   })
 }));
 
@@ -34,7 +40,10 @@ describe('HolidayForm', () => {
   beforeEach(() => {
     mockAddHoliday.mockClear();
     mockDeleteHoliday.mockClear();
+    mockClearStorageError.mockClear();
     mockHolidays = [];
+    mockStorageError = null;
+    mockIsLocalStorageAvailable = true;
   });
 
   describe('Form Rendering', () => {
@@ -302,6 +311,276 @@ describe('HolidayForm', () => {
 
         expect(nameLabel).toHaveAttribute('for', 'holiday-name');
         expect(dateLabel).toHaveAttribute('for', 'holiday-date');
+      });
+    });
+  });
+
+  describe('Persistence Feedback Features', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should show success message when holiday is added successfully with localStorage available', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      mockAddHoliday.mockReturnValue(null); // Success
+
+      renderWithProvider(<HolidayForm />);
+
+      const nameInput = screen.getByLabelText(/holiday name/i);
+      const dateInput = screen.getByLabelText(/holiday date/i);
+      const submitButton = screen.getByRole('button', { name: /add holiday/i });
+
+      await act(async () => {
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Thanksgiving');
+        await user.clear(dateInput);
+        await user.type(dateInput, '2025-11-27');
+        await user.click(submitButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been added successfully!/i)).toBeInTheDocument();
+      });
+
+      expect(mockClearStorageError).toHaveBeenCalled();
+    });
+
+    it('should show success message with storage unavailable notice when localStorage is not available', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      mockIsLocalStorageAvailable = false;
+      mockAddHoliday.mockReturnValue(null); // Success
+
+      renderWithProvider(<HolidayForm />);
+
+      const nameInput = screen.getByLabelText(/holiday name/i);
+      const dateInput = screen.getByLabelText(/holiday date/i);
+      const submitButton = screen.getByRole('button', { name: /add holiday/i });
+
+      await act(async () => {
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Thanksgiving');
+        await user.clear(dateInput);
+        await user.type(dateInput, '2025-11-27');
+        await user.click(submitButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been added \(storage not available\)/i)).toBeInTheDocument();
+      });
+    });
+
+    it('should show storage error when addHoliday returns error', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      const storageError = {
+        type: 'QUOTA_EXCEEDED' as const,
+        message: 'Storage quota exceeded',
+        userMessage: 'Storage is full. Please clear some browser data or remove holidays to free up space.'
+      };
+      mockAddHoliday.mockReturnValue(storageError);
+
+      renderWithProvider(<HolidayForm />);
+
+      const nameInput = screen.getByLabelText(/holiday name/i);
+      const dateInput = screen.getByLabelText(/holiday date/i);
+      const submitButton = screen.getByRole('button', { name: /add holiday/i });
+
+      await act(async () => {
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Thanksgiving');
+        await user.clear(dateInput);
+        await user.type(dateInput, '2025-11-27');
+        await user.click(submitButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(storageError.userMessage)).toBeInTheDocument();
+      });
+
+      // Form should not reset when there's an error
+      expect(nameInput).toHaveValue('Thanksgiving');
+      expect(dateInput).toHaveValue('2025-11-27');
+    });
+
+    it('should display context storage errors alongside component errors', async () => {
+      const contextError = {
+        type: 'SECURITY_ERROR' as const,
+        message: 'Storage access denied',
+        userMessage: 'Unable to access storage. Your browser may be in private mode or storage is disabled.'
+      };
+      mockStorageError = contextError;
+
+      renderWithProvider(<HolidayForm />);
+
+      await waitFor(() => {
+        expect(screen.getByText(contextError.userMessage)).toBeInTheDocument();
+      });
+    });
+
+    it('should auto-clear success messages after 3 seconds when localStorage is available', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      mockAddHoliday.mockReturnValue(null); // Success
+
+      renderWithProvider(<HolidayForm />);
+
+      const nameInput = screen.getByLabelText(/holiday name/i);
+      const dateInput = screen.getByLabelText(/holiday date/i);
+      const submitButton = screen.getByRole('button', { name: /add holiday/i });
+
+      await act(async () => {
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Thanksgiving');
+        await user.clear(dateInput);
+        await user.type(dateInput, '2025-11-27');
+        await user.click(submitButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been added successfully!/i)).toBeInTheDocument();
+      });
+
+      // Fast-forward 3 seconds
+      act(() => {
+        vi.advanceTimersByTime(3000);
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText(/"Thanksgiving" has been added successfully!/i)).not.toBeInTheDocument();
+      });
+    });
+
+    it('should auto-clear success messages after 5 seconds when localStorage is not available', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      mockIsLocalStorageAvailable = false;
+      mockAddHoliday.mockReturnValue(null); // Success
+
+      renderWithProvider(<HolidayForm />);
+
+      const nameInput = screen.getByLabelText(/holiday name/i);
+      const dateInput = screen.getByLabelText(/holiday date/i);
+      const submitButton = screen.getByRole('button', { name: /add holiday/i });
+
+      await act(async () => {
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Thanksgiving');
+        await user.clear(dateInput);
+        await user.type(dateInput, '2025-11-27');
+        await user.click(submitButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been added \(storage not available\)/i)).toBeInTheDocument();
+      });
+
+      // Fast-forward 3 seconds - message should still be there
+      act(() => {
+        vi.advanceTimersByTime(3000);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been added \(storage not available\)/i)).toBeInTheDocument();
+      });
+
+      // Fast-forward 2 more seconds (total 5 seconds)
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText(/"Thanksgiving" has been added \(storage not available\)/i)).not.toBeInTheDocument();
+      });
+    });
+
+    it('should auto-clear error messages after 5 seconds', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      const storageError = {
+        type: 'GENERIC_ERROR' as const,
+        message: 'Save failed',
+        userMessage: 'Unable to save holidays. Please try again later.'
+      };
+      mockAddHoliday.mockReturnValue(storageError);
+
+      renderWithProvider(<HolidayForm />);
+
+      const nameInput = screen.getByLabelText(/holiday name/i);
+      const dateInput = screen.getByLabelText(/holiday date/i);
+      const submitButton = screen.getByRole('button', { name: /add holiday/i });
+
+      await act(async () => {
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Thanksgiving');
+        await user.clear(dateInput);
+        await user.type(dateInput, '2025-11-27');
+        await user.click(submitButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(storageError.userMessage)).toBeInTheDocument();
+      });
+
+      // Fast-forward 5 seconds
+      act(() => {
+        vi.advanceTimersByTime(5000);
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText(storageError.userMessage)).not.toBeInTheDocument();
+      });
+    });
+
+    it('should show storage unavailable notice when localStorage is not available', () => {
+      mockIsLocalStorageAvailable = false;
+
+      renderWithProvider(<HolidayForm />);
+
+      expect(screen.getByText(/Note: Browser storage is not available. Your holidays will be saved temporarily only./i)).toBeInTheDocument();
+    });
+
+    it('should clear previous messages when submitting new form', async () => {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+      // First submission - success
+      mockAddHoliday.mockReturnValue(null);
+      mockIsLocalStorageAvailable = true;
+
+      renderWithProvider(<HolidayForm />);
+
+      const nameInput = screen.getByLabelText(/holiday name/i);
+      const dateInput = screen.getByLabelText(/holiday date/i);
+      const submitButton = screen.getByRole('button', { name: /add holiday/i });
+
+      await act(async () => {
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Thanksgiving');
+        await user.clear(dateInput);
+        await user.type(dateInput, '2025-11-27');
+        await user.click(submitButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been added successfully!/i)).toBeInTheDocument();
+      });
+
+      // Second submission - should clear previous message
+      mockAddHoliday.mockReturnValue({
+        type: 'QUOTA_EXCEEDED' as const,
+        userMessage: 'Storage is full'
+      });
+
+      await act(async () => {
+        await user.clear(nameInput);
+        await user.type(nameInput, 'Christmas');
+        await user.clear(dateInput);
+        await user.type(dateInput, '2025-12-25');
+        await user.click(submitButton);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Storage is full')).toBeInTheDocument();
+        expect(screen.queryByText(/"Thanksgiving" has been added successfully!/i)).not.toBeInTheDocument();
       });
     });
   });

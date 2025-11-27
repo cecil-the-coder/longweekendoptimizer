@@ -10,10 +10,17 @@ import { HolidayProvider } from '../../context/HolidayContext';
 
 // Mock the useHolidays hook
 const mockDeleteHoliday = vi.fn();
+const mockClearStorageError = vi.fn();
+let mockContextStorageError: any = null;
+let mockIsLocalStorageAvailable = true;
+
 vi.mock('../../hooks/useHolidays', () => ({
   useHolidays: () => ({
     deleteHoliday: mockDeleteHoliday,
-    holidays: []
+    holidays: [],
+    storageError: mockContextStorageError,
+    clearStorageError: mockClearStorageError,
+    isLocalStorageAvailable: mockIsLocalStorageAvailable
   })
 }));
 
@@ -35,6 +42,9 @@ describe('HolidayListItem', () => {
 
   beforeEach(() => {
     mockDeleteHoliday.mockClear();
+    mockClearStorageError.mockClear();
+    mockContextStorageError = null;
+    mockIsLocalStorageAvailable = true;
     // Mock window.confirm to return true by default
     window.confirm = vi.fn(() => true);
   });
@@ -178,6 +188,195 @@ describe('HolidayListItem', () => {
       const { container } = renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
 
  expect(container.firstChild).toBeInTheDocument();
+    });
+  });
+
+  describe('Persistence Feedback Features', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should show success message when holiday is deleted successfully with localStorage available', async () => {
+      window.confirm = vi.fn(() => true);
+      mockDeleteHoliday.mockReturnValue(null); // Success
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been deleted successfully!/i)).toBeInTheDocument();
+      });
+
+      expect(mockClearStorageError).toHaveBeenCalled();
+    });
+
+    it('should show success message with storage unavailable notice when localStorage is not available', async () => {
+      window.confirm = vi.fn(() => true);
+      mockIsLocalStorageAvailable = false;
+      mockDeleteHoliday.mockReturnValue(null); // Success
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been deleted \(storage not available\)/i)).toBeInTheDocument();
+      });
+    });
+
+    it('should show storage error when deleteHoliday returns error', async () => {
+      window.confirm = vi.fn(() => true);
+      const storageError = {
+        type: 'QUOTA_EXCEEDED' as const,
+        message: 'Storage quota exceeded',
+        userMessage: 'Storage is full. Please clear some browser data or remove holidays to free up space.'
+      };
+      mockDeleteHoliday.mockReturnValue(storageError);
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(storageError.userMessage)).toBeInTheDocument();
+      });
+    });
+
+    it('should display context storage errors alongside component errors', () => {
+      const contextError = {
+        type: 'SECURITY_ERROR' as const,
+        message: 'Storage access denied',
+        userMessage: 'Unable to access storage. Your browser may be in private mode or storage is disabled.'
+      };
+      mockContextStorageError = contextError;
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      expect(screen.getByText(contextError.userMessage)).toBeInTheDocument();
+    });
+
+    it('should auto-clear success messages after 3 seconds when localStorage is available', async () => {
+      window.confirm = vi.fn(() => true);
+      mockDeleteHoliday.mockReturnValue(null); // Success
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been deleted successfully!/i)).toBeInTheDocument();
+      });
+
+      // Fast-forward 3 seconds
+      vi.advanceTimersByTime(3000);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/"Thanksgiving" has been deleted successfully!/i)).not.toBeInTheDocument();
+      });
+    });
+
+    it('should auto-clear success messages after 5 seconds when localStorage is not available', async () => {
+      window.confirm = vi.fn(() => true);
+      mockIsLocalStorageAvailable = false;
+      mockDeleteHoliday.mockReturnValue(null); // Success
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been deleted \(storage not available\)/i)).toBeInTheDocument();
+      });
+
+      // Fast-forward 3 seconds - message should still be there
+      vi.advanceTimersByTime(3000);
+      expect(screen.getByText(/"Thanksgiving" has been deleted \(storage not available\)/i)).toBeInTheDocument();
+
+      // Fast-forward 2 more seconds (total 5 seconds)
+      vi.advanceTimersByTime(2000);
+
+      await waitFor(() => {
+        expect(screen.queryByText(/"Thanksgiving" has been deleted \(storage not available\)/i)).not.toBeInTheDocument();
+      });
+    });
+
+    it('should auto-clear error messages after 5 seconds', async () => {
+      window.confirm = vi.fn(() => true);
+      const storageError = {
+        type: 'GENERIC_ERROR' as const,
+        message: 'Delete failed',
+        userMessage: 'Unable to save holidays. Please try again later.'
+      };
+      mockDeleteHoliday.mockReturnValue(storageError);
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(storageError.userMessage)).toBeInTheDocument();
+      });
+
+      // Fast-forward 5 seconds
+      vi.advanceTimersByTime(5000);
+
+      await waitFor(() => {
+        expect(screen.queryByText(storageError.userMessage)).not.toBeInTheDocument();
+      });
+    });
+
+    it('should clear previous messages when deleting another holiday', async () => {
+      window.confirm = vi.fn(() => true);
+
+      // First deletion - success
+      mockDeleteHoliday.mockReturnValue(null);
+      mockIsLocalStorageAvailable = true;
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText(/"Thanksgiving" has been deleted successfully!/i)).toBeInTheDocument();
+      });
+
+      // Second deletion simulation (by clicking again) - should clear previous message
+      mockDeleteHoliday.mockReturnValue({
+        type: 'QUOTA_EXCEEDED' as const,
+        userMessage: 'Storage is full'
+      });
+
+      fireEvent.click(deleteButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Storage is full')).toBeInTheDocument();
+        expect(screen.queryByText(/"Thanksgiving" has been deleted successfully!/i)).not.toBeInTheDocument();
+      });
+    });
+
+    it('should not show any message when delete is cancelled', () => {
+      window.confirm = vi.fn(() => false);
+
+      renderWithProvider(<HolidayListItem holiday={mockHoliday} />);
+
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      fireEvent.click(deleteButton);
+
+      // Should not show any success/error messages
+      expect(screen.queryByText(/has been deleted/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/storage/i)).not.toBeInTheDocument();
     });
   });
 });
