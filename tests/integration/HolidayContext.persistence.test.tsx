@@ -16,13 +16,15 @@ import { renderHook, act } from '@testing-library/react';
 import { HolidayProvider, useHolidays } from '../../src/context/HolidayContext';
 import type { Holiday } from '../../src/context/HolidayContext';
 
-// Mock localStorageService
-const mockLoadHolidays = vi.fn();
-const mockSaveHolidays = vi.fn();
+// Import the services for mocking
+import * as storageService from '../../src/services/localStorageService';
 
+// Mock the localStorageService for controlled testing
 vi.mock('../../src/services/localStorageService', () => ({
-  loadHolidays: mockLoadHolidays,
-  saveHolidays: mockSaveHolidays,
+  loadHolidays: vi.fn(),
+  saveHolidays: vi.fn(),
+  isLocalStorageAvailable: vi.fn(),
+  getStorageQuotaInfo: vi.fn()
 }));
 
 // Test wrapper component for context
@@ -34,6 +36,15 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+
+    // Default successful behaviors
+    const { loadHolidays, saveHolidays, isLocalStorageAvailable, getStorageQuotaInfo } =
+      vi.mocked(storageService);
+
+    loadHolidays.mockReturnValue({ holidays: [], error: null, hadCorruption: false });
+    saveHolidays.mockReturnValue(null);
+    isLocalStorageAvailable.mockReturnValue(true);
+    getStorageQuotaInfo.mockReturnValue({ used: 1000, available: 4000000, total: 5000000 });
   });
 
   afterEach(() => {
@@ -44,7 +55,8 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
   describe('AC1: Adding holiday triggers immediate save with feedback', () => {
     it('should call saveHolidays when addHoliday is called', async () => {
       // GIVEN: Context provider is rendered
-      mockSaveHolidays.mockReturnValue({ success: true });
+      const { saveHolidays } = vi.mocked(storageService);
+      saveHolidays.mockReturnValue(null);
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
       // WHEN: Adding a holiday
@@ -53,7 +65,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
 
         // THEN: Should call saveHolidays with updated holiday list
         expect(error).toBeNull(); // Success case
-        expect(mockSaveHolidays).toHaveBeenCalledWith(
+        expect(saveHolidays).toHaveBeenCalledWith(
           expect.arrayContaining([
             expect.objectContaining({
               name: 'Test Holiday',
@@ -72,7 +84,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
         message: 'Storage quota exceeded',
         userMessage: 'Storage space is full. Please clear some data or try again later.'
       };
-      mockSaveHolidays.mockReturnValue(mockError);
+      saveHolidays.mockReturnValue(mockError);
 
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
@@ -82,7 +94,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
 
         // THEN: Should return the StorageError
         expect(error).toEqual(mockError);
-        expect(mockSaveHolidays).toHaveBeenCalledTimes(1);
+        expect(saveHolidays).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -94,7 +106,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
         message: 'Storage quota exceeded',
         userMessage: 'Storage space is full. Please clear some data or try again later.'
       };
-      mockSaveHolidays.mockReturnValue(mockError);
+      saveHolidays.mockReturnValue(mockError);
 
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
@@ -117,15 +129,16 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
         date: '2025-12-25'
       };
 
-      mockLoadHolidays.mockReturnValue([initialHoliday]);
-      mockSaveHolidays.mockReturnValue({ success: true });
+      loadHolidays.mockReturnValue([initialHoliday]);
+      const { saveHolidays } = vi.mocked(storageService);
+      saveHolidays.mockReturnValue(null);
 
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
       // Initialize with holiday
       await act(async () => {
         // Context should load initial holidays on mount
-        expect(mockLoadHolidays).toHaveBeenCalled();
+        expect(loadHolidays).toHaveBeenCalled();
       });
 
       // WHEN: Deleting the holiday
@@ -134,7 +147,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
 
         // THEN: Should call saveHolidays with empty array
         expect(error).toBeNull(); // Success case
-        expect(mockSaveHolidays).toHaveBeenCalledWith([]);
+        expect(saveHolidays).toHaveBeenCalledWith([]);
         expect(result.current.holidays).toHaveLength(0);
       });
     });
@@ -147,14 +160,14 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
         date: '2025-12-25'
       };
 
-      mockLoadHolidays.mockReturnValue([initialHoliday]);
+      loadHolidays.mockReturnValue([initialHoliday]);
       const mockError = {
         success: false,
         type: 'SECURITY_ERROR',
         message: 'Cannot write to storage',
         userMessage: 'Cannot save changes at this time.'
       };
-      mockSaveHolidays.mockReturnValue(mockError);
+      saveHolidays.mockReturnValue(mockError);
 
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
@@ -186,7 +199,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
         }
       ];
 
-      mockLoadHolidays.mockReturnValue(savedHolidays);
+      loadHolidays.mockReturnValue(savedHolidays);
 
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
@@ -196,14 +209,14 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
       });
 
       // THEN: Should load holidays from localStorage
-      expect(mockLoadHolidays).toHaveBeenCalledTimes(1);
+      expect(loadHolidays).toHaveBeenCalledTimes(1);
       expect(result.current.holidays).toEqual(savedHolidays);
     });
 
     it('should handle loading errors gracefully', async () => {
       // GIVEN: loadHolidays fails
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      mockLoadHolidays.mockImplementation(() => {
+      loadHolidays.mockImplementation(() => {
         throw new Error('Failed to load holidays');
       });
 
@@ -227,7 +240,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
     it('should continue with empty state when localStorage unavailable', async () => {
       // GIVEN: localStorage is not available
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      mockLoadHolidays.mockReturnValue([]); // Should return empty array when unavailable
+      loadHolidays.mockReturnValue([]); // Should return empty array when unavailable
 
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
@@ -281,7 +294,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
       ];
 
       errorScenarios.forEach(scenario => {
-        mockSaveHolidays.mockReturnValue(scenario.storageError);
+        saveHolidays.mockReturnValue(scenario.storageError);
 
         const { result } = renderHook(() => useHolidays(), { wrapper });
 
@@ -306,8 +319,8 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
         }
       ];
 
-      mockLoadHolidays.mockReturnValue(initialHolidays);
-      mockSaveHolidays.mockReturnValue({
+      loadHolidays.mockReturnValue(initialHolidays);
+      saveHolidays.mockReturnValue({
         success: false,
         type: 'GENERIC_ERROR',
         message: 'Save failed',
@@ -332,7 +345,8 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
   describe('Persistence State Management', () => {
     it('should handle rapid successive add/delete operations correctly', async () => {
       // GIVEN: Context provider
-      mockSaveHolidays.mockReturnValue({ success: true });
+      const { saveHolidays } = vi.mocked(storageService);
+      saveHolidays.mockReturnValue(null);
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
       // WHEN: Performing rapid operations
@@ -350,14 +364,15 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
       });
 
       // THEN: Should maintain correct state and save appropriately
-      expect(mockSaveHolidays).toHaveBeenCalledTimes(3); // add1 + add2 + delete1
+      expect(saveHolidays).toHaveBeenCalledTimes(3); // add1 + add2 + delete1
       expect(result.current.holidays).toHaveLength(1);
       expect(result.current.holidays[0].name).toBe('Holiday 2');
     });
 
     it('should not call save if no changes made', async () => {
       // GIVEN: Context provider
-      mockSaveHolidays.mockReturnValue({ success: true });
+      const { saveHolidays } = vi.mocked(storageService);
+      saveHolidays.mockReturnValue(null);
       const { result } = renderHook(() => useHolidays(), { wrapper });
 
       // WHEN: Not making any changes
@@ -367,7 +382,7 @@ describe('HolidayContext - Enhanced Persistence Integration', () => {
       });
 
       // THEN: Should not call saveHolidays
-      expect(mockSaveHolidays).not.toHaveBeenCalled();
+      expect(saveHolidays).not.toHaveBeenCalled();
     });
   });
 });

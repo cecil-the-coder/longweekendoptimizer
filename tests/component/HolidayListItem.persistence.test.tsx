@@ -27,6 +27,9 @@ vi.mock('../../src/hooks/useHolidays', () => ({
       return mockStorageError; // Returns storage error or null
     }),
     holidays: [],
+    clearStorageError: vi.fn(),
+    storageError: null,
+    isLocalStorageAvailable: true,
   }),
 }));
 
@@ -135,7 +138,7 @@ describe('HolidayListItem Component - Delete Persistence Feedback', () => {
         }
       ];
 
-      errorScenarios.forEach(scenario => {
+      for (const scenario of errorScenarios) {
         // GIVEN: Specific storage error type for delete
         mockStorageError = {
           success: false,
@@ -149,16 +152,16 @@ describe('HolidayListItem Component - Delete Persistence Feedback', () => {
         const deleteButton = screen.getByRole('button', { name: /delete/i });
 
         // WHEN: Deleting holiday with storage error
-        user.click(deleteButton);
-        user.click(screen.getByRole('button', { name: /delete/i }));
+        await user.click(deleteButton);
+        await user.click(screen.getByRole('button', { name: /delete/i }));
 
         // THEN: Should show appropriate error message
-        waitFor(() => {
+        await waitFor(() => {
           expect(screen.getByText(scenario.expectedText)).toBeInTheDocument();
         });
 
         unmount();
-      });
+      }
     });
   });
 
@@ -359,7 +362,7 @@ describe('HolidayListItem Component - Delete Persistence Feedback', () => {
       const holiday1 = { ...mockHoliday, id: 'holiday-1', name: 'Holiday 1' };
       const holiday2 = { ...mockHoliday, id: 'holiday-2', name: 'Holiday 2' };
 
-      MockStorageError = null;
+      mockStorageError = null;
 
       const { rerender } = render(<HolidayListItem holiday={holiday1} />);
 

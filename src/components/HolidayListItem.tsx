@@ -33,14 +33,14 @@ const HolidayListItem: React.FC<HolidayListItemProps> = ({ holiday }) => {
       } else {
         // Show success message
         if (isLocalStorageAvailable) {
-          setSuccessMessage(`"${holiday.name}" has been deleted successfully!`);
+          setSuccessMessage(`Holiday deleted successfully!`);
           // Clear success message after 3 seconds
           setTimeout(() => {
             setSuccessMessage('');
             setStorageError('');
           }, 3000);
         } else {
-          setSuccessMessage(`"${holiday.name}" has been deleted (storage not available)`);
+          setSuccessMessage(`${holiday.name} has been deleted (storage not available)`);
           // Clear success message after 5 seconds for storage-unavailable case
           setTimeout(() => {
             setSuccessMessage('');
@@ -68,13 +68,21 @@ const HolidayListItem: React.FC<HolidayListItemProps> = ({ holiday }) => {
   return (
     <div className="space-y-2">
       {successMessage && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-3 py-2 rounded text-sm">
+        <div
+          role="alert"
+          aria-live="polite"
+          className="text-green-600 bg-green-50 px-3 py-2 rounded text-sm"
+        >
           {successMessage}
         </div>
       )}
 
       {(storageError || contextStorageError) && (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-3 py-2 rounded text-sm">
+        <div
+          role="alert"
+          aria-live="polite"
+          className="text-red-600 bg-red-50 px-3 py-2 rounded text-sm"
+        >
           {storageError || contextStorageError?.userMessage}
         </div>
       )}

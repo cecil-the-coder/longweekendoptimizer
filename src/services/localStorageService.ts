@@ -52,6 +52,15 @@ const createStorageError = (error: unknown, context: 'save' | 'load' = 'save'): 
     };
   }
 
+  // Handle data validation errors (non-array data)
+  if (error instanceof Error && error.message === 'Invalid data format: expected array') {
+    return {
+      type: 'GENERIC_ERROR',
+      message: 'Invalid data format: expected array',
+      userMessage: 'Unable to save holidays. Please try again later.'
+    };
+  }
+
   if (error instanceof Error) {
     return {
       type: 'GENERIC_ERROR',
@@ -195,10 +204,14 @@ export const saveHolidays = (holidays: Holiday[]): StorageError | null => {
     }
   }
 
-  // Feature detection: if localStorage is unavailable, simulate success but don't actually save
+  // Feature detection: if localStorage is unavailable, return structured error
   if (!isLocalStorageAvailable()) {
     console.warn('localStorage is not available, changes will not persist');
-    return null; // Simulate success to avoid blocking user experience
+    return {
+      type: 'SECURITY_ERROR',
+      message: 'Storage unavailable',
+      userMessage: 'Unable to save holidays: browser storage is not available. Your browser may be in private mode or storage is disabled.'
+    };
   }
 
   try {

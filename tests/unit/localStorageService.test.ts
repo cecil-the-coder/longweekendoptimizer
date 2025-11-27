@@ -9,140 +9,213 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { saveHolidays, loadHolidays } from '../../src/services/localStorageService';
-import type { Holiday } from '../../src/context/HolidayContext';
-import { createHoliday } from '../factories/holidayFactory';
+import { createHoliday, type Holiday } from '../factories/holidayFactory';
+
+// Import first
+import * as localStorageModule from '../../src/services/localStorageService';
 
 describe('localStorageService', () => {
+  // Mock localStorage to be available for tests
+  const mockLocalStorage = {
+    getItem: vi.fn(),
+    setItem: vi.fn(),
+    removeItem: vi.fn(),
+    clear: vi.fn(),
+    length: 0,
+    key: vi.fn()
+  };
+
   beforeEach(() => {
-    // Clear localStorage before each test
-    localStorage.clear();
+    // Replace global localStorage with mock
+    Object.defineProperty(window, 'localStorage', {
+      value: mockLocalStorage,
+      writable: true
+    });
+
+    // Mock isLocalStorageAvailable to always return true
+    vi.spyOn(localStorageModule, 'isLocalStorageAvailable').mockReturnValue(true);
+
+    // Clear all mocks
     vi.clearAllMocks();
+
+    // Keep isLocalStorageAvailable mocked to true
+    vi.spyOn(localStorageModule, 'isLocalStorageAvailable').mockReturnValue(true);
+
+    // Default mock implementations
+    mockLocalStorage.setItem.mockImplementation(() => {});
+    mockLocalStorage.removeItem.mockImplementation(() => {});
+    mockLocalStorage.getItem.mockImplementation((key) => {
+      if (key === '__localStorage_test__') return '__localStorage_test__';
+      return null;
+    });
+    mockLocalStorage.clear.mockImplementation(() => {});
+    mockLocalStorage.key.mockImplementation(() => null);
+    Object.defineProperty(mockLocalStorage, 'length', { value: 0 });
   });
 
   afterEach(() => {
-    localStorage.clear();
+    vi.restoreAllMocks();
   });
 
   describe('saveHolidays', () => {
-    it('should save holidays to localStorage', () => {
+    it('should save holidays to localStorage and return null on success', () => {
       const holidays: Holiday[] = [createHoliday({ name: 'Test Holiday' })];
 
-      // The current API doesn't return anything, so we just check localStorage
-      saveHolidays(holidays);
+      const result = localStorageModule.saveHolidays(holidays);
 
-      const stored = localStorage.getItem('long-weekend-optimizer-holidays');
-      expect(stored).toBeTruthy();
-      expect(JSON.parse(stored!)).toEqual(holidays);
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'long-weekend-optimizer-holidays',
+        JSON.stringify(holidays)
+      );
+      expect(result).toBeNull();
     });
 
-    it('should save empty array', () => {
-      saveHolidays([]);
+    it('should save empty array and return null on success', () => {
+      const result = localStorageModule.saveHolidays([]);
 
-      const stored = localStorage.getItem('long-weekend-optimizer-holidays');
-      expect(stored).toBeTruthy();
-      expect(JSON.parse(stored!)).toEqual([]);
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'long-weekend-optimizer-holidays',
+        '[]'
+      );
+      expect(result).toBeNull();
     });
 
-    it('should handle QuotaExceededError gracefully', () => {
-      const mockSetItem = vi.spyOn(Storage.prototype, 'setItem');
-      mockSetItem.mockImplementation(() => {
-        const error = new DOMException('QuotaExceededError');
-        error.name = 'QuotaExceededError';
+    it('should return quota exceeded error structured object', () => {
+      // Reset to proper available state first
+      mockLocalStorage.getItem.mockImplementation((key) => {
+        if (key === '__localStorage_test__') return '__localStorage_test__';
+        return null;
+      });
+
+      // Then mock setItem to throw error
+      mockLocalStorage.setItem.mockImplementation(() => {
+        const error = new DOMException('QuotaExceededError', 'QuotaExceededError');
         throw error;
       });
 
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
       const holidays: Holiday[] = [createHoliday()];
 
-      // Should not throw, but should log error
-      expect(() => saveHolidays(holidays)).not.toThrow();
+      const result = localStorageModule.saveHolidays(holidays);
 
+      expect(result).toEqual({
+        type: 'QUOTA_EXCEEDED',
+        message: 'Storage quota exceeded',
+        userMessage: 'Storage is full. Please clear some browser data or remove holidays to free up space.'
+      });
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Failed to save holidays to localStorage:',
         expect.any(DOMException)
       );
 
       consoleErrorSpy.mockRestore();
-      mockSetItem.mockRestore();
     });
 
-    it('should handle SecurityError gracefully (private browsing)', () => {
-      const mockSetItem = vi.spyOn(Storage.prototype, 'setItem');
-      mockSetItem.mockImplementation(() => {
-        const error = new DOMException('SecurityError');
-        error.name = 'SecurityError';
+    it('should return security error structured object', () => {
+      // Reset to proper available state first
+      mockLocalStorage.getItem.mockImplementation((key) => {
+        if (key === '__localStorage_test__') return '__localStorage_test__';
+        return null;
+      });
+
+      // Then mock setItem to throw error
+      mockLocalStorage.setItem.mockImplementation(() => {
+        const error = new DOMException('SecurityError', 'SecurityError');
         throw error;
       });
 
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
       const holidays: Holiday[] = [createHoliday()];
 
-      // Should not throw, but should log error
-      expect(() => saveHolidays(holidays)).not.toThrow();
+      const result = localStorageModule.saveHolidays(holidays);
 
+      expect(result).toEqual({
+        type: 'SECURITY_ERROR',
+        message: 'Storage access denied',
+        userMessage: 'Unable to access storage. Your browser may be in private mode or storage is disabled.'
+      });
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Failed to save holidays to localStorage:',
         expect.any(DOMException)
       );
 
       consoleErrorSpy.mockRestore();
-      mockSetItem.mockRestore();
     });
 
-    it('should handle generic errors', () => {
-      const mockSetItem = vi.spyOn(Storage.prototype, 'setItem');
-      mockSetItem.mockImplementation(() => {
+    it('should return generic error structured object', () => {
+      // Reset to proper available state first
+      mockLocalStorage.getItem.mockImplementation((key) => {
+        if (key === '__localStorage_test__') return '__localStorage_test__';
+        return null;
+      });
+
+      // Then mock setItem to throw error
+      mockLocalStorage.setItem.mockImplementation(() => {
         throw new Error('Generic error');
       });
 
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
       const holidays: Holiday[] = [createHoliday()];
 
-      // Should not throw, but should log error
-      expect(() => saveHolidays(holidays)).not.toThrow();
+      const result = localStorageModule.saveHolidays(holidays);
 
+      expect(result).toEqual({
+        type: 'GENERIC_ERROR',
+        message: 'Generic error',
+        userMessage: 'Unable to save holidays. Please try again later.'
+      });
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Failed to save holidays to localStorage:',
         expect.any(Error)
       );
 
       consoleErrorSpy.mockRestore();
-      mockSetItem.mockRestore();
     });
   });
 
   describe('loadHolidays', () => {
-    it('should load holidays from localStorage', () => {
+    it('should load holidays from localStorage and return structured result', () => {
       const holidays: Holiday[] = [
         createHoliday({ name: 'Holiday 1' }),
         createHoliday({ name: 'Holiday 2' }),
       ];
 
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify(holidays));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(holidays));
 
-      const loaded = loadHolidays();
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual(holidays);
+      expect(loaded).toEqual({
+        holidays: holidays,
+        error: null,
+        hadCorruption: false
+      });
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('long-weekend-optimizer-holidays');
     });
 
-    it('should return empty array when no data stored', () => {
-      const loaded = loadHolidays();
+    it('should return empty array structure when no data stored', () => {
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual([]);
+      expect(loaded).toEqual({
+        holidays: [],
+        error: null,
+        hadCorruption: false
+      });
     });
 
     it('should handle corrupted JSON data gracefully', () => {
-      localStorage.setItem('long-weekend-optimizer-holidays', 'invalid JSON {]');
+      mockLocalStorage.getItem.mockReturnValue('invalid JSON {]');
 
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      const loaded = loadHolidays();
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual([]);
+      expect(loaded.holidays).toEqual([]);
+      expect(loaded.error).toEqual({
+        type: 'CORRUPTION_ERROR',
+        message: 'Data corruption detected',
+        userMessage: 'Saved holiday data was corrupted. Starting with an empty list.'
+      });
+      expect(loaded.hadCorruption).toBe(true);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Failed to load holidays from localStorage:',
         expect.any(Error)
@@ -152,65 +225,98 @@ describe('localStorageService', () => {
     });
 
     it('should handle SecurityError gracefully (private browsing)', () => {
-      const mockGetItem = vi.spyOn(Storage.prototype, 'getItem');
-      mockGetItem.mockImplementation(() => {
-        const error = new DOMException('SecurityError');
-        error.name = 'SecurityError';
+      mockLocalStorage.getItem.mockImplementation(() => {
+        const error = new DOMException('SecurityError', 'SecurityError');
         throw error;
       });
 
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-      const loaded = loadHolidays();
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual([]);
+      expect(loaded.holidays).toEqual([]);
+      expect(loaded.error).toEqual({
+        type: 'SECURITY_ERROR',
+        message: 'Storage access denied',
+        userMessage: 'Unable to access storage. Your browser may be in private mode or storage is disabled.'
+      });
+      expect(loaded.hadCorruption).toBe(false);
       expect(consoleErrorSpy).toHaveBeenCalledWith(
         'Failed to load holidays from localStorage:',
         expect.any(DOMException)
       );
 
       consoleErrorSpy.mockRestore();
-      mockGetItem.mockRestore();
     });
 
     it('should handle non-array data gracefully', () => {
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify({ not: 'an array' }));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify({ not: 'an array' }));
 
-      const loaded = loadHolidays();
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual([]);
+      expect(loaded.holidays).toEqual([]);
+      expect(loaded.error).toEqual({
+        type: 'GENERIC_ERROR',
+        message: 'Invalid data format: expected array',
+        userMessage: 'Unable to save holidays. Please try again later.'
+      });
+      expect(loaded.hadCorruption).toBe(false);
     });
 
     it('should handle null data gracefully', () => {
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify(null));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(null));
 
-      const loaded = loadHolidays();
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual([]);
+      expect(loaded.holidays).toEqual([]);
+      expect(loaded.error).toEqual({
+        type: 'GENERIC_ERROR',
+        message: 'Invalid data format: expected array',
+        userMessage: 'Unable to save holidays. Please try again later.'
+      });
+      expect(loaded.hadCorruption).toBe(false);
     });
 
     it('should handle undefined data gracefully', () => {
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify(undefined));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(undefined));
 
-      const loaded = loadHolidays();
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual([]);
+      expect(loaded.holidays).toEqual([]);
+      expect(loaded.error).toEqual({
+        type: 'GENERIC_ERROR',
+        message: 'Invalid data format: expected array',
+        userMessage: 'Unable to save holidays. Please try again later.'
+      });
+      expect(loaded.hadCorruption).toBe(false);
     });
 
     it('should handle string data gracefully', () => {
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify('not an array'));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify('not an array'));
 
-      const loaded = loadHolidays();
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual([]);
+      expect(loaded.holidays).toEqual([]);
+      expect(loaded.error).toEqual({
+        type: 'GENERIC_ERROR',
+        message: 'Invalid data format: expected array',
+        userMessage: 'Unable to save holidays. Please try again later.'
+      });
+      expect(loaded.hadCorruption).toBe(false);
     });
 
     it('should handle number data gracefully', () => {
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify(123));
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(123));
 
-      const loaded = loadHolidays();
+      const loaded = localStorageModule.loadHolidays();
 
-      expect(loaded).toEqual([]);
+      expect(loaded.holidays).toEqual([]);
+      expect(loaded.error).toEqual({
+        type: 'GENERIC_ERROR',
+        message: 'Invalid data format: expected array',
+        userMessage: 'Unable to save holidays. Please try again later.'
+      });
+      expect(loaded.hadCorruption).toBe(false);
     });
   });
 
@@ -222,22 +328,32 @@ describe('localStorageService', () => {
       ];
 
       // Save holidays
-      saveHolidays(originalHolidays);
+      localStorageModule.saveHolidays(originalHolidays);
+
+      // Mock getItem to return what we just saved
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(originalHolidays));
 
       // Load holidays
-      const loadedHolidays = loadHolidays();
+      const result = localStorageModule.loadHolidays();
 
-      expect(loadedHolidays).toEqual(originalHolidays);
+      expect(result.holidays).toEqual(originalHolidays);
+      expect(result.error).toBeNull();
+      expect(result.hadCorruption).toBe(false);
     });
 
     it('should handle empty data round-trip', () => {
       // Save empty array
-      saveHolidays([]);
+      localStorageModule.saveHolidays([]);
+
+      // Mock getItem to return empty array
+      mockLocalStorage.getItem.mockReturnValue('[]');
 
       // Load holidays
-      const loadedHolidays = loadHolidays();
+      const result = localStorageModule.loadHolidays();
 
-      expect(loadedHolidays).toEqual([]);
+      expect(result.holidays).toEqual([]);
+      expect(result.error).toBeNull();
+      expect(result.hadCorruption).toBe(false);
     });
 
     it('should handle large holiday list', () => {
@@ -249,14 +365,19 @@ describe('localStorageService', () => {
       );
 
       // Save large list
-      saveHolidays(largeHolidayList);
+      localStorageModule.saveHolidays(largeHolidayList);
+
+      // Mock getItem to return the large list
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(largeHolidayList));
 
       // Load holidays
-      const loadedHolidays = loadHolidays();
+      const result = localStorageModule.loadHolidays();
 
-      expect(loadedHolidays).toHaveLength(1000);
-      expect(loadedHolidays[0].name).toBe('Holiday 1');
-      expect(loadedHolidays[999].name).toBe('Holiday 1000');
+      expect(result.holidays).toHaveLength(1000);
+      expect(result.holidays[0].name).toBe('Holiday 1');
+      expect(result.holidays[999].name).toBe('Holiday 1000');
+      expect(result.error).toBeNull();
+      expect(result.hadCorruption).toBe(false);
     });
   });
 });
