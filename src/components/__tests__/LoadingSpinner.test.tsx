@@ -29,8 +29,8 @@ describe('LoadingSpinner', () => {
     it('should have default medium size', () => {
       render(<LoadingSpinner data-testid="loading-spinner" />);
 
-      const spinner = screen.getByTestId('loading-spinner');
-      expect(spinner).toHaveClass('w-8', 'h-8'); // Default medium size
+      const spinnerElement = screen.getByTestId('spinner-element');
+      expect(spinnerElement).toHaveClass('w-8', 'h-8'); // Default medium size on SVG
     });
   });
 
@@ -38,15 +38,15 @@ describe('LoadingSpinner', () => {
     it('should render small sized spinner', () => {
       render(<LoadingSpinner size="small" data-testid="loading-spinner" />);
 
-      const spinner = screen.getByTestId('loading-spinner');
-      expect(spinner).toHaveClass('w-4', 'h-4'); // Small size
+      const spinnerElement = screen.getByTestId('spinner-element');
+      expect(spinnerElement).toHaveClass('w-4', 'h-4'); // Small size on SVG
     });
 
     it('should render medium sized spinner (default)', () => {
       render(<LoadingSpinner size="medium" data-testid="loading-spinner" />);
 
-      const spinner = screen.getByTestId('loading-spinner');
-      expect(spinner).toHaveClass('w-8', 'h-8'); // Medium size
+      const spinnerElement = screen.getByTestId('spinner-element');
+      expect(spinnerElement).toHaveClass('w-8', 'h-8'); // Medium size on SVG
     });
 
     it('should render large sized spinner', () => {
