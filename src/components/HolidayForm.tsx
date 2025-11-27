@@ -1,5 +1,6 @@
 // Holiday Form Component
 // Provides input fields for adding holidays with validation
+// Enhanced with storage feedback and success messages
 // Following component standards: React functional component with TypeScript
 
 import React, { useState, FormEvent } from 'react';
@@ -7,16 +8,18 @@ import { useHolidays } from '../hooks/useHolidays';
 import { StorageError } from '../services/localStorageService';
 
 const HolidayForm: React.FC = () => {
-  const { addHoliday, holidays } = useHolidays();
+  const { addHoliday, holidays, storageError: contextStorageError, clearStorageError, isLocalStorageAvailable } = useHolidays();
   const [holidayName, setHolidayName] = useState('');
   const [holidayDate, setHolidayDate] = useState('');
   const [validationError, setValidationError] = useState('');
   const [storageError, setStorageError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     setValidationError('');
     setStorageError('');
+    setSuccessMessage('');
 
     // Form validation for empty inputs
     if (!holidayName.trim()) {
@@ -44,16 +47,32 @@ const HolidayForm: React.FC = () => {
       return;
     }
 
-    // Add holiday and handle storage errors
+    // Add holiday and handle storage errors/success
     const storageErrorResult = addHoliday(holidayName.trim(), holidayDate);
     if (storageErrorResult) {
       setStorageError(storageErrorResult.userMessage);
+      // Clear error after 5 seconds
+      setTimeout(() => setStorageError(''), 5000);
       return;
+    }
+
+    // Show success message for feedback
+    if (isLocalStorageAvailable) {
+      setSuccessMessage(`"${holidayName.trim()}" has been added successfully!`);
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } else {
+      setSuccessMessage(`"${holidayName.trim()}" has been added (storage not available)`);
+      // Clear success message after 5 seconds for storage-unavailable case
+      setTimeout(() => setSuccessMessage(''), 5000);
     }
 
     // Reset form fields on successful submission
     setHolidayName('');
     setHolidayDate('');
+
+    // Clear any existing context storage errors
+    clearStorageError();
   };
 
   return (
@@ -65,9 +84,21 @@ const HolidayForm: React.FC = () => {
           </div>
         )}
 
-        {storageError && (
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded">
+            {successMessage}
+          </div>
+        )}
+
+        {(storageError || contextStorageError) && (
           <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded">
-            {storageError}
+            {storageError || contextStorageError?.userMessage}
+          </div>
+        )}
+
+        {!isLocalStorageAvailable && (
+          <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-2 rounded">
+            <strong>Note:</strong> Browser storage is not available. Your holidays will be saved temporarily only.
           </div>
         )}
 

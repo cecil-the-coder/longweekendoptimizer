@@ -159,7 +159,7 @@ describe('Holiday Management Integration', () => {
     });
 
     it('[P1] should handle localStorage security error (private browsing)', async () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => ());
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       const holidays = [
         { id: '1', name: 'Test', date: '2025-01-01' }
