@@ -27,6 +27,25 @@ A React TypeScript application that helps users plan long weekends by managing c
   - Sorted by holiday date for organized planning
   - 100% test coverage with comprehensive edge case handling
 
+### 📋 Recommendation Display
+- **RecommendationCard Component**: Individual recommendation display with rich formatting
+  - Shows holiday name, date, and recommended day off in an accessible card format
+  - Formatted date strings (e.g., "Thursday, Nov 27, 2025")
+  - Responsive design with hover effects and visual indicators
+  - ARIA labels for screen reader accessibility
+  - Data-testid attributes for comprehensive test coverage
+- **RecommendationsSection Component**: Container with automatic updates
+  - Real-time updates when holidays are added or removed
+  - Chronological sorting by holiday date
+  - Empty state handling with user-friendly messages
+  - Summary showing total opportunities found
+  - Graceful error handling for calculation failures
+- **Auto-Update Behavior**: Recommendations recalculate automatically
+  - useMemo optimization for efficient re-calculations
+  - React integration with HolidayContext for state management
+  - Immediate response to holiday list changes
+  - 91.6% test pass rate (76/83 tests passing)
+
 ### 💾 Local Storage Persistence
 - **Automatic Data Persistence**: All holidays automatically saved to browser localStorage
 - **Feature Detection**: Automatically detects localStorage availability with graceful degradation
@@ -56,10 +75,12 @@ A React TypeScript application that helps users plan long weekends by managing c
 ```
 src/
 ├── components/           # React UI components
-│   ├── HolidayForm.tsx      # Holiday input form with validation
-│   ├── HolidayList.tsx      # List display container
-│   ├── HolidayListItem.tsx  # Individual holiday item with delete
-│   └── __tests__/           # Component tests
+│   ├── HolidayForm.tsx         # Holiday input form with validation
+│   ├── HolidayList.tsx         # List display container
+│   ├── HolidayListItem.tsx     # Individual holiday item with delete
+│   ├── RecommendationCard.tsx  # Individual recommendation display
+│   ├── RecommendationsSection.tsx # Recommendations container with auto-update
+│   └── __tests__/              # Component tests
 ├── context/            # React Context for state management
 │   └── HolidayContext.tsx   # Holiday data context
 ├── hooks/              # Custom React hooks
@@ -143,6 +164,81 @@ interface Recommendation {
   recommendedDay: string;   // "Monday" or "Friday"
   explanation: string;      // "→ 4-day weekend"
 }
+```
+
+### Recommendation Display Components API
+
+#### RecommendationCard Component
+
+**Props Interface**
+```typescript
+interface RecommendationCardProps {
+  recommendation: Recommendation;  // Recommendation data to display
+}
+```
+
+**Features**
+- Displays individual recommendation with formatted dates and explanations
+- Defensive programming with null/undefined check and error state
+- ARIA accessibility attributes: `role="article"`, `aria-label`, `data-testid`
+- Responsive design with Tailwind CSS classes
+- Hover effects and visual indicators
+- Icon indicator showing successful recommendation
+
+**Date Formatting Functions**
+- `formatDate()`: Converts YYYY-MM-DD to "DayOfWeek, Mon DD, YYYY" format
+- `formatRecommendedDate()`: Same formatting for recommended dates
+- Graceful handling of invalid dates with "Invalid Date" fallback
+
+**Usage Example**
+```typescript
+<RecommendationCard
+  recommendation={{
+    holidayName: "Thanksgiving",
+    holidayDate: "2025-11-27",
+    holidayDayOfWeek: "Thursday",
+    recommendedDate: "2025-11-28",
+    recommendedDay: "Friday",
+    explanation: "→ 4-day weekend"
+  }}
+/>
+```
+
+#### RecommendationsSection Component
+
+**Props Interface**
+```typescript
+interface RecommendationsSectionProps {
+  // No direct props - uses HolidayContext for data
+}
+```
+
+**Features**
+- Container component with automatic updates when holiday list changes
+- Real-time integration with HolidayContext via `useHolidays()` hook
+- Chronological sorting of recommendations by holiday date
+- Empty state handling with user-friendly messages
+- Summary display showing total opportunities found
+- Loading states and error handling
+- ARIA accessibility: `role="region"`, `aria-live="polite"`
+- Performance optimization with useMemo for re-calculations
+
+**Internal Workflow**
+1. Fetch holidays from HolidayContext
+2. Calculate recommendations using `calculateRecommendations(holidays)`
+3. Sort chronologically by holiday date
+4. Map each recommendation to RecommendationCard component
+5. Display empty state or recommendations with summary
+
+**Performance Optimizations**
+- `useMemo` with `[holidays]` dependency prevents unnecessary recalculations
+- Efficient O(n log n) sorting algorithm
+- Error handling prevents crashes on invalid data
+
+**Usage Example**
+```typescript
+// In App.tsx alongside other components
+<RecommendationsSection />
 ```
 
 #### Algorithm Logic

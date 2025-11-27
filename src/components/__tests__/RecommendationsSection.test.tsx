@@ -110,15 +110,15 @@ describe('RecommendationsSection', () => {
 
       renderWithProvider(<RecommendationsSection />);
 
-      expect(screen.getByText(/For.*Thanksgiving/i)).toBeInTheDocument();
-      expect(screen.getByText(/Take off:/i)).toBeInTheDocument();
+      expect(screen.getByTestId('recommendation-title-Thanksgiving')).toBeInTheDocument();
+      expect(screen.getByTestId('recommendation-takeoff-Thanksgiving')).toBeInTheDocument();
       expect(screen.getByText(/Friday, Nov 28, 2025/i)).toBeInTheDocument();
-      expect(screen.getByText(/→ 4-day weekend/i)).toBeInTheDocument();
+      expect(screen.getByTestId('recommendation-explanation-Thanksgiving')).toBeInTheDocument();
     });
 
     it('should display Tuesday/Monday recommendation correctly', () => {
       const holidays: Holiday[] = [
-        { id: '1', name: "New Year's Day", date: '2025-01-01' } // Tuesday
+        { id: '1', name: "New Year's Day", date: '2025-01-07' } // Tuesday
       ];
 
       vi.mocked(useHolidays).mockReturnValue({
@@ -132,16 +132,16 @@ describe('RecommendationsSection', () => {
 
       renderWithProvider(<RecommendationsSection />);
 
-      expect(screen.getByText(/For.*New Year's Day/i)).toBeInTheDocument();
-      expect(screen.getByText(/Take off:/i)).toBeInTheDocument();
-      expect(screen.getByText(/Monday, Dec 31, 2024/i)).toBeInTheDocument();
-      expect(screen.getByText(/→ 4-day weekend/i)).toBeInTheDocument();
+      expect(screen.getByTestId("recommendation-title-New Year's Day")).toBeInTheDocument();
+      expect(screen.getByTestId("recommendation-takeoff-New Year's Day")).toBeInTheDocument();
+      expect(screen.getByText(/Monday, Jan 6, 2025/i)).toBeInTheDocument();
+      expect(screen.getByTestId("recommendation-explanation-New Year's Day")).toBeInTheDocument();
     });
 
     it('should display multiple recommendations chronologically', () => {
       const holidays: Holiday[] = [
         { id: '1', name: 'Thanksgiving', date: '2025-11-27' }, // Thursday, later
-        { id: '2', name: "New Year's Day", date: '2025-01-01' } // Tuesday, earlier
+        { id: '2', name: "New Year's Day", date: '2025-01-07' } // Tuesday, earlier
       ];
 
       vi.mocked(useHolidays).mockReturnValue({
@@ -159,14 +159,14 @@ describe('RecommendationsSection', () => {
       expect(recommendations).toHaveLength(2);
 
       // New Year's Day should come first (chronological order)
-      expect(screen.getByText(/For.*New Year's Day/i)).toBeInTheDocument();
-      expect(screen.getByText(/For.*Thanksgiving/i)).toBeInTheDocument();
+      expect(screen.getByTestId("recommendation-title-New Year's Day")).toBeInTheDocument();
+      expect(screen.getByTestId('recommendation-title-Thanksgiving')).toBeInTheDocument();
     });
 
     it('should display correct summary message for multiple recommendations', () => {
       const holidays: Holiday[] = [
         { id: '1', name: 'Thanksgiving', date: '2025-11-27' },
-        { id: '2', name: "New Year's Day", date: '2025-01-01' }
+        { id: '2', name: "New Year's Day", date: '2025-01-07' }
       ];
 
       vi.mocked(useHolidays).mockReturnValue({
@@ -180,7 +180,7 @@ describe('RecommendationsSection', () => {
 
       renderWithProvider(<RecommendationsSection />);
 
-      expect(screen.getByText(/2 long weekend opportunities found/i)).toBeInTheDocument();
+      expect(screen.getByTestId('recommendation-summary')).toHaveTextContent('2 long weekend opportunitys found!');
       expect(screen.getByText(/Take advantage of these strategic days off/i)).toBeInTheDocument();
     });
 
@@ -200,7 +200,7 @@ describe('RecommendationsSection', () => {
 
       renderWithProvider(<RecommendationsSection />);
 
-      expect(screen.getByText(/1 long weekend opportunity found/i)).toBeInTheDocument();
+      expect(screen.getByTestId('recommendation-summary')).toHaveTextContent('1 long weekend opportunity found!');
       expect(screen.getByText(/Take advantage of these strategic days off/i)).toBeInTheDocument();
     });
   });
@@ -240,7 +240,7 @@ describe('RecommendationsSection', () => {
       });
 
       expect(screen.getByText(/Recommendations/i)).toBeInTheDocument();
-      expect(screen.getByText(/For.*Thanksgiving/i)).toBeInTheDocument();
+      expect(screen.getByTestId('recommendation-title-Thanksgiving')).toBeInTheDocument();
     });
 
     it('should update when holiday is deleted', () => {

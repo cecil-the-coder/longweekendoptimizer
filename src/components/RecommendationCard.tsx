@@ -10,9 +10,29 @@ interface RecommendationCardProps {
 }
 
 const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommendation }) => {
+  // Defensive checks for null/undefined recommendation
+  if (!recommendation) {
+    return (
+      <div
+        className="p-4 bg-red-50 border border-red-200 rounded-lg"
+        role="article"
+        aria-label="Invalid recommendation"
+      >
+        <div className="text-red-700">
+          <h3 className="text-lg font-semibold mb-2">Invalid Recommendation</h3>
+          <p className="text-sm">Recommendation data is missing or invalid.</p>
+        </div>
+      </div>
+    );
+  }
+
   // Format holiday date for readable display (e.g., "Thursday, Nov 27, 2025")
   const formatDate = (dateString: string): string => {
+    if (!dateString) return 'Invalid Date';
+
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid Date';
+
     const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
     const month = date.toLocaleDateString('en-US', { month: 'short' });
     const day = date.getDate();
@@ -23,7 +43,11 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommendation 
 
   // Format recommended date for readable display (e.g., "Friday, Nov 28, 2025")
   const formatRecommendedDate = (dateString: string): string => {
+    if (!dateString) return 'Invalid Date';
+
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid Date';
+
     const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
     const month = date.toLocaleDateString('en-US', { month: 'short' });
     const dayNum = date.getDate();
@@ -32,30 +56,37 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommendation 
     return `${dayOfWeek}, ${month} ${dayNum}, ${year}`;
   };
 
+  // Safely extract recommendation properties with defaults
+  const holidayName = recommendation.holidayName || 'Unknown Holiday';
+  const holidayDate = recommendation.holidayDate || '';
+  const recommendedDate = recommendation.recommendedDate || '';
+  const explanation = recommendation.explanation || '';
+
   return (
     <div
       className="p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors duration-200"
       role="article"
-      aria-label={`Recommendation for ${recommendation.holidayName}`}
+      aria-label={`Recommendation for ${holidayName}`}
+      data-testid={`recommendation-card-${holidayName}`}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-green-900 mb-2">
-            For <strong>{recommendation.holidayName}</strong>
+          <h3 className="text-lg font-semibold text-green-900 mb-2" data-testid={`recommendation-title-${holidayName}`}>
+            For <strong>{holidayName}</strong>
           </h3>
 
           <div className="space-y-1 text-gray-700">
-            <p className="text-sm">
-              <span className="font-medium">Holiday:</span> {formatDate(recommendation.holidayDate)}
+            <p className="text-sm" data-testid={`recommendation-holiday-${holidayName}`}>
+              <span className="font-medium">Holiday:</span> {formatDate(holidayDate)}
             </p>
 
-            <p className="text-sm">
+            <p className="text-sm" data-testid={`recommendation-takeoff-${holidayName}`}>
               <span className="font-medium">Take off:</span>{' '}
-              <strong>{formatRecommendedDate(recommendation.recommendedDate)}</strong>
+              <strong>{formatRecommendedDate(recommendedDate)}</strong>
             </p>
 
-            <p className="text-base font-medium text-green-700">
-              {recommendation.explanation}
+            <p className="text-base font-medium text-green-700" data-testid={`recommendation-explanation-${holidayName}`}>
+              {explanation}
             </p>
           </div>
         </div>
