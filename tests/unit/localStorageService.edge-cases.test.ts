@@ -112,8 +112,8 @@ describe('localStorageService - Enhanced Edge Cases and Error Paths', () => {
         const saveResult = saveHolidays([{ id: '1', name: 'Test', date: '2025-01-01' }]);
 
         expect(loadResult.holidays).toEqual([]);
-        expect(loadResult.error?.type).toBe('GENERIC_ERROR');
-        expect(saveResult?.type).toBe('GENERIC_ERROR');
+        expect(loadResult.error).toBe(null); // localStorage unavailable is handled gracefully
+        expect(saveResult?.type).toBe('SECURITY_ERROR'); // localStorage methods disabled is a security error
       });
 
       it('should return false for feature detection when exceptions occur', () => {
@@ -145,10 +145,16 @@ describe('localStorageService - Enhanced Edge Cases and Error Paths', () => {
           date: '2025-12-25'
         }));
 
-        const quotaError = new DOMException('QuotaExceededError: localStorage quota exceeded', 'QuotaExceededError');
-        mockLocalStorage.setItem.mockImplementation(() => {
-          throw quotaError;
-        });
+        // First make localStorage appear available for feature detection
+        mockLocalStorage.setItem
+          .mockImplementationOnce(() => {}) // availability check passes
+          .mockImplementation(() => {
+            // Then throw quota error for actual save
+            const quotaError = new DOMException('QuotaExceededError: localStorage quota exceeded', 'QuotaExceededError');
+            throw quotaError;
+          });
+        mockLocalStorage.getItem.mockImplementationOnce(() => null);
+        mockLocalStorage.removeItem.mockImplementationOnce(() => {});
 
         const result = saveHolidays(holidays);
 

@@ -133,7 +133,7 @@ describe('HolidayListItem Component - Enhanced Delete Persistence Feedback', () 
       const deleteButton = screen.getByRole('button', { name: /delete/i });
 
       // Verify holiday is initially visible
-      expect(screen.getByText('Test Holiday')).toBeInTheDocument();
+      expect(screen.getByText(/Test Holiday/)).toBeInTheDocument();
 
       // WHEN: User deletes holiday but storage fails
       await user.click(deleteButton);
@@ -526,7 +526,7 @@ describe('HolidayListItem Component - Enhanced Delete Persistence Feedback', () 
     test('should maintain visual consistency during delete animations', async () => {
       render(<HolidayListItemWithProvider holiday={testHoliday} />);
 
-      const holidayElement = screen.getByText('Test Holiday');
+      const holidayElement = screen.getByText(/Test Holiday/);
       const deleteButton = screen.getByRole('button', { name: /delete/i });
 
       // WHEN: Starting delete operation

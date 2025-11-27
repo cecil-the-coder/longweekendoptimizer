@@ -80,9 +80,9 @@ const isValidHoliday = (obj: any): obj is Holiday => {
     typeof obj.id === 'string' &&
     typeof obj.name === 'string' &&
     typeof obj.date === 'string' &&
-    obj.id.length > 0 &&
-    obj.name.length > 0 &&
-    obj.date.length > 0
+    obj.id.trim().length > 0 &&
+    obj.name.trim().length > 0 &&
+    obj.date.trim().length > 0
   );
 };
 

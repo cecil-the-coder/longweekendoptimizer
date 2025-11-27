@@ -6,6 +6,7 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import * as storage from '../services/localStorageService';
 import { StorageError } from '../services/localStorageService';
+import { Recommendation, calculateRecommendations } from '../utils/dateLogic';
 
 // Define the Holiday type
 export interface Holiday {
@@ -21,6 +22,9 @@ interface HolidayContextType {
   storageError: StorageError | null;
   clearStorageError: () => void;
   isLocalStorageAvailable: boolean;
+  recommendations: Recommendation[];
+  isCalculating: boolean;
+  recommendationsError: Error | null;
 }
 
 export const HolidayContext = createContext<HolidayContextType | undefined>(undefined);
@@ -29,6 +33,9 @@ export const HolidayProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [storageError, setStorageError] = useState<StorageError | null>(null);
   const [isLocalStorageAvailable, setIsLocalStorageAvailable] = useState(true);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [recommendationsError, setRecommendationsError] = useState<Error | null>(null);
 
   // Load from local storage on mount with enhanced error handling
   useEffect(() => {
@@ -56,6 +63,36 @@ export const HolidayProvider: React.FC<{ children: ReactNode }> = ({ children })
 
     loadInitialData();
   }, []); // Only run once on mount
+
+  // Calculate recommendations whenever holidays change
+  useEffect(() => {
+    const calculateRecommendationsAsync = async () => {
+      setIsCalculating(true);
+      setRecommendationsError(null);
+
+      try {
+        // Add small delay to show loading state for better UX
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const calculatedRecommendations = calculateRecommendations(holidays);
+
+        // Sort recommendations chronologically by holiday date
+        const sortedRecommendations = [...calculatedRecommendations].sort((a, b) => {
+          return new Date(a.holidayDate).getTime() - new Date(b.holidayDate).getTime();
+        });
+
+        setRecommendations(sortedRecommendations);
+      } catch (error) {
+        console.error('Error calculating recommendations:', error);
+        setRecommendationsError(error instanceof Error ? error : new Error('Failed to calculate recommendations'));
+        setRecommendations([]);
+      } finally {
+        setIsCalculating(false);
+      }
+    };
+
+    calculateRecommendationsAsync();
+  }, [holidays]); // Recalculate when holidays change
 
   // Manual save function to prevent infinite loops
   const saveToStorage = (holidayData: Holiday[]): StorageError | null => {
@@ -118,7 +155,10 @@ export const HolidayProvider: React.FC<{ children: ReactNode }> = ({ children })
       deleteHoliday,
       storageError,
       clearStorageError,
-      isLocalStorageAvailable
+      isLocalStorageAvailable,
+      recommendations,
+      isCalculating,
+      recommendationsError
     }}>
       {children}
     </HolidayContext.Provider>

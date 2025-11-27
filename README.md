@@ -27,24 +27,56 @@ A React TypeScript application that helps users plan long weekends by managing c
   - Sorted by holiday date for organized planning
   - 100% test coverage with comprehensive edge case handling
 
-### 📋 Recommendation Display
-- **RecommendationCard Component**: Individual recommendation display with rich formatting
-  - Shows holiday name, date, and recommended day off in an accessible card format
-  - Formatted date strings (e.g., "Thursday, Nov 27, 2025")
-  - Responsive design with hover effects and visual indicators
-  - ARIA labels for screen reader accessibility
-  - Data-testid attributes for comprehensive test coverage
-- **RecommendationsSection Component**: Container with automatic updates
-  - Real-time updates when holidays are added or removed
-  - Chronological sorting by holiday date
-  - Empty state handling with user-friendly messages
-  - Summary showing total opportunities found
-  - Graceful error handling for calculation failures
-- **Auto-Update Behavior**: Recommendations recalculate automatically
-  - useMemo optimization for efficient re-calculations
-  - React integration with HolidayContext for state management
-  - Immediate response to holiday list changes
-  - 91.6% test pass rate (76/83 tests passing)
+### 🛡️ Comprehensive Error Handling & User Feedback
+
+- **ErrorBoundary Component**: React error boundary with graceful fallback UI
+  - Catches JavaScript errors in component tree and prevents app crashes
+  - Recovery options: "Try Again" (with retry limit) and "Reload Page"
+  - Development-mode error details display for debugging
+  - Accessible ARIA labels and semantic HTML
+  - Maximum retry attempts with automatic page reload fallback
+- **Smart Notification System**: User feedback for all application events
+  - Success notifications (green styling) - 3-second auto-dismiss
+  - Error notifications (red styling) - 5-second auto-dismiss
+  - Warning notifications (yellow styling) for storage issues
+  - Info notifications (blue styling) for general guidance
+  - Manual dismiss button with keyboard accessibility
+  - Screen reader support with role="alert" and aria-live="polite"
+- **LoadingSpinner Component**: Consistent loading indicators throughout app
+  - Multiple sizes: small, medium, large, xlarge
+  - Color variants: default, light, dark, success, warning, error
+  - Customizable labels and show/hide label options
+  - Accessible with ARIA live regions and semantic markup
+  - Smooth CSS animations with proper performance optimization
+
+### 📋 Enhanced Form Validation & Error States
+- **Real-time Input Validation**: Immediate feedback on form fields
+  - Holiday name validation: non-empty, reasonable length checks
+  - Holiday date validation: valid date format, not in distant past
+  - Weekend prevention: blocks Saturday/Sunday holiday dates
+  - Duplicate prevention: one holiday per date with clear error messages
+  - Field-specific error messages with actionable guidance
+- **Enhanced Empty State Handling**: Helpful guidance for first-time users
+  - Holiday list empty state with clear call-to-action guidance
+  - Recommendations empty state with explanation of how to add holidays
+  - Visually distinct empty state presentations with icons and helpful text
+  - ARIA accessibility for screen readers with proper semantic markup
+
+### 💾 Resilient Storage System with Error Recovery
+- **Advanced Storage Error Handling**: Comprehensive error management
+  - QuotaExceededError: User guidance when storage is full with clear actions
+  - SecurityError: Private browsing mode detection and alternative explanations
+  - CorruptionError: Automatic recovery from corrupted localStorage data
+  - GenericError: Fallback handling for unexpected storage issues
+- **Graceful Degradation Patterns**: App continues functioning in degraded mode
+  - In-memory fallback when localStorage unavailable
+  - Session-only data persistence with clear user notifications
+  - Non-blocking error handling allows continued app usage
+  - Recovery options: "Try Again" and "Clear All Data" for quota issues
+- **Storage Quota Management**: Preventative quota monitoring
+  - Storage usage estimation and quota tracking
+  - Warning thresholds to prevent quota exceeded errors
+  - Clear user guidance when storage limits are approached
 
 ### 💾 Local Storage Persistence
 - **Automatic Data Persistence**: All holidays automatically saved to browser localStorage
@@ -65,33 +97,38 @@ A React TypeScript application that helps users plan long weekends by managing c
 
 - **Frontend**: React 18 with TypeScript
 - **State Management**: React Context (HolidayContext)
-- **Styling**: Tailwind CSS
+- **Error Handling**: React Error Boundaries, Custom Notification System
+- **Styling**: Tailwind CSS with responsive design
 - **Testing**: Vitest + React Testing Library
 - **Build Tool**: Vite
-- **Data Storage**: Browser localStorage
+- **Data Storage**: Browser localStorage with error recovery
 
 ## Project Structure
 
 ```
 src/
 ├── components/           # React UI components
-│   ├── HolidayForm.tsx         # Holiday input form with validation
-│   ├── HolidayList.tsx         # List display container
+│   ├── HolidayForm.tsx         # Holiday input form with enhanced validation
+│   ├── HolidayList.tsx         # List display with empty states & error handling
 │   ├── HolidayListItem.tsx     # Individual holiday item with delete
 │   ├── RecommendationCard.tsx  # Individual recommendation display
-│   ├── RecommendationsSection.tsx # Recommendations container with auto-update
-│   └── __tests__/              # Component tests
+│   ├── RecommendationsSection.tsx # Recommendations with loading & errors
+│   ├── ErrorBoundary.tsx       # React error boundary with recovery UI
+│   ├── Notification.tsx        # User feedback notification system
+│   ├── LoadingSpinner.tsx      # Accessible loading indicators
+│   └── __tests__/              # Component tests (including error handling tests)
 ├── context/            # React Context for state management
-│   └── HolidayContext.tsx   # Holiday data context
+│   └── HolidayContext.tsx   # Enhanced context with error states & loading
 ├── hooks/              # Custom React hooks
-│   └── useHolidays.ts      # Hook for holiday operations
+│   ├── useHolidays.ts      # Main holiday operations hook
+│   └── useRecommendations.ts # Recommendations state management hook
 ├── services/           # Business logic services
-│   ├── localStorageService.ts  # Storage service with error handling
+│   ├── localStorageService.ts  # Storage service with comprehensive error handling
 │   └── __tests__/            # Service tests
 ├── utils/              # Utility functions and business logic
 │   ├── dateLogic.ts         # Recommendation engine for 4-day weekends
 │   └── __tests__/           # Utility function tests
-└── App.tsx             # Main application component
+└── App.tsx             # Main application with error boundaries
 ```
 
 ## API Documentation
@@ -164,6 +201,127 @@ interface Recommendation {
   recommendedDay: string;   // "Monday" or "Friday"
   explanation: string;      // "→ 4-day weekend"
 }
+```
+
+### Error Handling Components API
+
+#### ErrorBoundary Component
+
+**Props Interface**
+```typescript
+interface ErrorBoundaryProps {
+  children: ReactNode;
+  fallback?: ReactNode;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
+  'data-testid'?: string;
+}
+```
+
+**Features**
+- Catches JavaScript errors in child component tree
+- Provides recovery options: "Try Again" (with retry limit) and "Reload Page"
+- Development-mode error details display for debugging
+- Accessible ARIA labels and semantic HTML
+- Maximum 3 retry attempts before automatic page reload
+- Custom fallback UI support via props
+
+**Error Recovery Behavior**
+- **Try Again**: Resets error state and re-renders child components (max 3 attempts)
+- **Reload Page**: Hard refreshes the page to reset application state
+- **Development Details**: Shows error message and component stack in development mode
+
+**Usage Example**
+```typescript
+<ErrorBoundary
+  onError={(error, errorInfo) => {
+    console.error('Caught error:', error, errorInfo);
+  }}
+  data-testid="app-error-boundary"
+>
+  <App />
+</ErrorBoundary>
+```
+
+#### Notification Component
+
+**Props Interface**
+```typescript
+interface NotificationProps {
+  type: 'success' | 'error' | 'warning' | 'info';
+  message: string;
+  dismissible?: boolean;
+  autoDismiss?: number | boolean;
+  onDismiss?: () => void;
+  className?: string;
+  'data-testid'?: string;
+}
+```
+
+**Features**
+- Support for four notification types with distinct styling and icons
+- Auto-dismiss functionality with configurable timing (default 5 seconds)
+- Manual dismiss button with keyboard accessibility
+- Screen reader support with `role="alert"` and `aria-live="polite"`
+- Custom styling via className prop
+- TypeScript interface with comprehensive prop options
+
+**Notification Types**
+- **Success**: Green styling with checkmark icon (3-second default dismiss)
+- **Error**: Red styling with X icon (5-second default dismiss)
+- **Warning**: Yellow styling with warning icon
+- **Info**: Blue styling with info icon
+
+**Usage Example**
+```typescript
+<Notification
+  type="success"
+  message="Holiday added successfully!"
+  autoDismiss={3000}
+  dismissible={true}
+  onDismiss={() => console.log('Notification dismissed')}
+  data-testid="success-notification"
+/>
+```
+
+#### LoadingSpinner Component
+
+**Props Interface**
+```typescript
+interface LoadingSpinnerProps {
+  size?: 'small' | 'medium' | 'large' | 'xlarge';
+  variant?: 'default' | 'light' | 'dark' | 'success' | 'warning' | 'error';
+  label?: string;
+  showLabel?: boolean;
+  className?: string;
+  'aria-hidden'?: boolean;
+  tabIndex?: number;
+  'data-testid'?: string;
+}
+```
+
+**Features**
+- Multiple size variants: small (w-4), medium (w-8), large (w-12), xlarge (w-16)
+- Color variants for different contexts: default, light, dark, success, warning, error
+- Customizable labels with show/hide options
+- Full accessibility support with ARIA live regions
+- Semantic HTML with proper role="status" attributes
+- Smooth CSS animations with optimized performance
+
+**Size Options**
+- **small**: 16x16px (w-4 h-4) - For inline loading indicators
+- **medium**: 32x32px (w-8 h-8) - Default size for most use cases
+- **large**: 48x48px (w-12 h-12) - For prominent loading states
+- **xlarge**: 64x64px (w-16 h-16) - For full-page loading screens
+
+**Usage Example**
+```typescript
+<LoadingSpinner
+  size="large"
+  variant="default"
+  label="Calculating recommendations..."
+  showLabel={true}
+  data-testid="recommendations-loading"
+/>
 ```
 
 ### Recommendation Display Components API
