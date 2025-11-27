@@ -103,9 +103,13 @@ beforeEach(() => {
     localStorageInstance._simulateUnavailable(true); // By default, localStorage is available
   }
 
-  // Clear window.confirm mock calls
-  if (typeof window !== 'undefined' && window.confirm) {
-    vi.mocked(window.confirm).mockClear();
+  // Clear window.confirm mock calls if it exists
+  try {
+    if (typeof window !== 'undefined' && window.confirm && vi.isMockFunction(window.confirm)) {
+      vi.mocked(window.confirm).mockClear();
+    }
+  } catch (error) {
+    // Ignore if window.confirm is not mocked
   }
 });
 
