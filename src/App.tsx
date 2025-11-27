@@ -1,5 +1,6 @@
 import HolidayForm from './components/HolidayForm';
 import HolidayList from './components/HolidayList';
+import RecommendationsSection from './components/RecommendationsSection';
 import { HolidayProvider } from './context/HolidayContext';
 import './App.css';
 
@@ -16,6 +17,7 @@ function App() {
           <main className="space-y-8">
             <HolidayForm />
             <HolidayList />
+            <RecommendationsSection />
           </main>
         </div>
       </div>

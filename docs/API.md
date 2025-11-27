@@ -1,14 +1,15 @@
 # API Documentation
 
-This document provides detailed API documentation for the Long Weekend Optimizer application, focusing on the localStorage service and component interfaces implemented in Story 1.2.
+This document provides detailed API documentation for the Long Weekend Optimizer application, focusing on the localStorage service, recommendation engine, and component interfaces implemented through Story 1.5.
 
 ## Table of Contents
 
 1. [localStorage Service API](#localstorage-service-api)
-2. [Holiday Context API](#holiday-context-api)
-3. [Component Props and Interfaces](#component-props-and-interfaces)
-4. [Error Handling](#error-handling)
-5. [Data Types](#data-types)
+2. [Recommendation Engine API](#recommendation-engine-api)
+3. [Holiday Context API](#holiday-context-api)
+4. [Component Props and Interfaces](#component-props-and-interfaces)
+5. [Error Handling](#error-handling)
+6. [Data Types](#data-types)
 
 ## localStorage Service API
 
@@ -69,6 +70,66 @@ if (error) {
 }
 ```
 
+## Recommendation Engine API
+
+The recommendation engine (`/src/utils/dateLogic.ts`) provides intelligent 4-day weekend calculation based on holiday dates analysis.
+
+### Functions
+
+#### `calculateRecommendations(holidays: Holiday[]): Recommendation[]`
+
+**Description**: Analyzes holiday dates and returns recommendations for optimal vacation days to create 4-day weekends.
+
+**Parameters**:
+- `holidays: Holiday[]` - Array of holiday objects to analyze
+
+**Returns**: `Recommendation[]` - Array of recommendation objects sorted chronologically by holiday date
+
+**Algorithm Logic**:
+1. **Input Validation**: Validates holiday array and individual holiday objects
+2. **Date Processing**: Extracts day of week for each holiday
+3. **Tuesday Detection**: For Tuesday holidays, checks if Monday before is already a holiday
+4. **Thursday Detection**: For Thursday holidays, checks if Friday after is already a holiday
+5. **Recommendation Generation**: Creates recommendation objects for qualifying holidays
+6. **Duplicate Prevention**: Uses Set-based O(1) lookup to avoid duplicate recommendations
+7. **Sorting**: Returns recommendations sorted by holiday date
+
+**Performance**:
+- O(n) algorithm for recommendation processing
+- O(n log n) for chronological sorting
+- Processes 50+ holidays in under 10ms
+
+**Edge Cases Handled**:
+- Empty or null input arrays → returns empty array
+- Invalid holiday objects → filtered out and ignored
+- Malformed dates → validation with graceful error handling
+- Holidays on Monday/Wednesday/Friday → no recommendations generated
+- Monday already holiday when Tuesday → no recommendation generated
+- Friday already holiday when Thursday → no recommendation generated
+
+**Example Usage**:
+```typescript
+import { calculateRecommendations } from '../utils/dateLogic';
+
+const holidays = [
+  { id: '1', name: 'Thanksgiving', date: '2025-11-27' }, // Thursday
+  { id: '2', name: 'Independence Day', date: '2025-07-04' } // Friday (no recommendation)
+];
+
+const recommendations = calculateRecommendations(holidays);
+console.log(recommendations);
+// Output: [
+//   {
+//     holidayName: "Thanksgiving",
+//     holidayDate: "2025-11-27",
+//     holidayDayOfWeek: "Thursday",
+//     recommendedDate: "2025-11-28",
+//     recommendedDay: "Friday",
+//     explanation: "→ 4-day weekend"
+//   }
+// ]
+```
+
 ## Holiday Context API
 
 The Holiday Context (`/src/context/HolidayContext.tsx`) provides centralized state management for holiday data.
@@ -117,6 +178,77 @@ interface HolidayContextType {
 - Auto-saves on state change
 
 ## Component Props and Interfaces
+
+### RecommendationCard Component Props
+
+```typescript
+interface RecommendationCardProps {
+  recommendation: Recommendation;  // Recommendation data to display
+}
+```
+
+**Features**:
+- Displays individual recommendation with formatted dates and explanations
+- Defensive programming with null/undefined check and error state
+- ARIA accessibility attributes: `role="article"`, `aria-label`, `data-testid`
+- Responsive design with Tailwind CSS classes
+- Hover effects and visual indicators
+- Icon indicator showing successful recommendation
+
+**Date Formatting Functions**:
+- `formatDate()`: Converts YYYY-MM-DD to "DayOfWeek, Mon DD, YYYY" format
+- `formatRecommendedDate()`: Same formatting for recommended dates
+- Graceful handling of invalid dates with "Invalid Date" fallback
+
+**Example Usage**:
+```typescript
+<RecommendationCard
+  recommendation={{
+    holidayName: "Thanksgiving",
+    holidayDate: "2025-11-27",
+    holidayDayOfWeek: "Thursday",
+    recommendedDate: "2025-11-28",
+    recommendedDay: "Friday",
+    explanation: "→ 4-day weekend"
+  }}
+/>
+```
+
+### RecommendationsSection Component Props
+
+```typescript
+interface RecommendationsSectionProps {
+  // No direct props - uses HolidayContext for data
+}
+```
+
+**Features**:
+- Container component with automatic updates when holiday list changes
+- Real-time integration with HolidayContext via `useHolidays()` hook
+- Chronological sorting of recommendations by holiday date
+- Empty state handling with user-friendly messages
+- Summary display showing total opportunities found
+- Loading states and error handling
+- ARIA accessibility: `role="region"`, `aria-live="polite"`
+- Performance optimization with useMemo for re-calculations
+
+**Internal Workflow**:
+1. Fetch holidays from HolidayContext
+2. Calculate recommendations using `calculateRecommendations(holidays)`
+3. Sort chronologically by holiday date
+4. Map each recommendation to RecommendationCard component
+5. Display empty state or recommendations with summary
+
+**Performance Optimizations**:
+- `useMemo` with `[holidays]` dependency prevents unnecessary recalculations
+- Efficient O(n log n) sorting algorithm
+- Error handling prevents crashes on invalid data
+
+**Example Usage**:
+```typescript
+// In App.tsx alongside other components
+<RecommendationsSection />
+```
 
 ### HolidayForm Component Props
 
@@ -207,6 +339,19 @@ interface Holiday {
 }
 ```
 
+### Recommendation Interface
+
+```typescript
+interface Recommendation {
+  holidayName: string;      // Original holiday name
+  holidayDate: string;      // Holiday date (YYYY-MM-DD)
+  holidayDayOfWeek: string; // "Tuesday" or "Thursday"
+  recommendedDate: string;  // Date to take off (YYYY-MM-DD)
+  recommendedDay: string;   // "Monday" or "Friday"
+  explanation: string;      // "→ 4-day weekend"
+}
+```
+
 ### Example Holiday Object
 
 ```typescript
@@ -214,6 +359,19 @@ interface Holiday {
   id: "f47ac10b-58cc-4372-a567-0e02b2c3d479",
   name: "Thanksgiving",
   date: "2025-11-27"
+}
+```
+
+### Example Recommendation Object
+
+```typescript
+{
+  holidayName: "Thanksgiving",
+  holidayDate: "2025-11-27",
+  holidayDayOfWeek: "Thursday",
+  recommendedDate: "2025-11-28",
+  recommendedDay: "Friday",
+  explanation: "→ 4-day weekend"
 }
 ```
 
@@ -321,3 +479,7 @@ Component tests should verify:
 - User interaction flows
 - Responsive design behavior
 - Storage error handling
+- Recommendation card rendering and formatting
+- Recommendations section auto-update behavior
+- Chronological sorting functionality
+- Empty state handling for recommendations

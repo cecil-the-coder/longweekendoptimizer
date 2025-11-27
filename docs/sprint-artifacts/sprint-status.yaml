@@ -41,5 +41,5 @@ development_status:
   1-2-holiday-input-ui: done
   1-3-local-storage-persistence: done
   1-4-core-recommendation-logic: done
-  1-5-display-recommendations: backlog
+  1-5-display-recommendations: done
   epic-1-retrospective: optional
