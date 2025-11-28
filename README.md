@@ -499,6 +499,8 @@ The application includes comprehensive test coverage:
 
 ## Getting Started
 
+### Development
+
 1. Install dependencies:
    ```bash
    npm install
@@ -510,6 +512,46 @@ The application includes comprehensive test coverage:
    ```
 
 3. Open [http://localhost:5173](http://localhost:5173) in your browser
+
+### Deployment
+
+The application is configured for automatic deployment to GitHub Pages via GitHub Actions.
+
+#### Quick Setup
+
+1. **Enable GitHub Pages**:
+   - Go to your repository on GitHub
+   - Click **Settings** → **Pages**
+   - Set **Source** to "GitHub Actions"
+
+2. **Automatic Deployment**:
+   - Push to `main` branch triggers automatic build and deployment
+   - Application will be available at `https://[username].github.io/longweekendoptimizer/`
+
+3. **Test Deployment**:
+   ```bash
+   npm run build
+   npm run preview
+   ```
+
+#### Detailed Instructions
+
+📖 **Complete deployment guide**: [docs/deployment.md](./docs/deployment.md)
+
+#### Live Demo
+
+Once deployed, the application is accessible at:
+```
+https://[username].github.io/longweekendoptimizer/
+```
+
+**Features in Production:**
+- ✅ Automated GitHub Actions deployment
+- ✅ Optimized static asset loading
+- ✅ SPA routing with 404.html fallback
+- ✅ Responsive design for all devices
+- ✅ HTTPS hosting via GitHub Pages
+- ✅ Error handling for production environment
 
 ## Persistence Architecture
 
