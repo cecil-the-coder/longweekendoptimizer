@@ -1,1 +1,0 @@
-/workspace/.bmad/bmm/workflows/orchestrate-story.md
