@@ -74,12 +74,52 @@ export function getUpcomingHolidays(year: number = new Date().getFullYear()) {
 }
 
 /**
+ * Get upcoming holidays within the next 365 days
+ * @returns Array of predefined holidays with full dates
+ */
+export function getUpcomingHolidaysNext365Days() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const oneYearFromNow = new Date(today);
+  oneYearFromNow.setDate(oneYearFromNow.getDate() + 365);
+
+  const currentYear = today.getFullYear();
+  const nextYear = oneYearFromNow.getFullYear();
+
+  // Get holidays for current and next year
+  const holidays = [];
+
+  for (let year = currentYear; year <= nextYear; year++) {
+    const yearHolidays = PREDEFINED_HOLIDAYS.map(holiday => {
+      const [month, day] = holiday.date.split('-').map(Number);
+      const fullDate = new Date(year, month - 1, day);
+
+      return {
+        ...holiday,
+        fullDate: fullDate.toISOString().split('T')[0],
+        dateObj: fullDate,
+      };
+    });
+
+    holidays.push(...yearHolidays);
+  }
+
+  return holidays
+    .filter(holiday => holiday.dateObj >= today && holiday.dateObj <= oneYearFromNow)
+    .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+}
+
+/**
  * Group holidays by country, with USA first
- * @param year - The year to get holidays for
+ * @param mode - 'thisYear' or 'next365Days'
  * @returns Map of country to holidays
  */
-export function getUpcomingHolidaysByCountry(year: number = new Date().getFullYear()) {
-  const upcomingHolidays = getUpcomingHolidays(year);
+export function getUpcomingHolidaysByCountry(mode: 'thisYear' | 'next365Days' = 'thisYear') {
+  const upcomingHolidays = mode === 'thisYear'
+    ? getUpcomingHolidays()
+    : getUpcomingHolidaysNext365Days();
+
   const grouped = new Map<string, typeof upcomingHolidays>();
 
   // Initialize with USA first

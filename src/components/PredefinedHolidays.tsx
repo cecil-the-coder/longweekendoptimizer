@@ -18,8 +18,9 @@ const COUNTRY_INFO: Record<string, { flag: string; name: string }> = {
 const PredefinedHolidays: React.FC = () => {
   const { addHoliday, holidays } = useHolidays();
   const [selectedCountries, setSelectedCountries] = useState<Set<string>>(new Set(['USA']));
+  const [dateMode, setDateMode] = useState<'thisYear' | 'next365Days'>('next365Days');
   const currentYear = new Date().getFullYear();
-  const holidaysByCountry = getUpcomingHolidaysByCountry(currentYear);
+  const holidaysByCountry = getUpcomingHolidaysByCountry(dateMode);
 
   const toggleCountry = (country: string) => {
     setSelectedCountries(prev => {
@@ -68,6 +69,35 @@ const PredefinedHolidays: React.FC = () => {
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-1">Quick Add Holidays</h3>
         <p className="text-sm text-gray-600">Select countries and add holidays instantly</p>
+      </div>
+
+      {/* Date Range Toggle */}
+      <div className="mb-4 flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+        <label htmlFor="date-mode-toggle" className="text-sm font-medium text-gray-700 cursor-pointer">
+          Show holidays
+        </label>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setDateMode('thisYear')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              dateMode === 'thisYear'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            This Year
+          </button>
+          <button
+            onClick={() => setDateMode('next365Days')}
+            className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              dateMode === 'next365Days'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            Next 365 Days
+          </button>
+        </div>
       </div>
 
       {/* Country Selector */}
@@ -168,7 +198,8 @@ const PredefinedHolidays: React.FC = () => {
       )}
 
       <div className="mt-4 text-xs text-gray-500 text-center">
-        Showing {filteredHolidays.length} upcoming holiday{filteredHolidays.length !== 1 ? 's' : ''} for {currentYear}
+        Showing {filteredHolidays.length} upcoming holiday{filteredHolidays.length !== 1 ? 's' : ''}
+        {dateMode === 'thisYear' ? ` for ${currentYear}` : ' within the next 365 days'}
       </div>
     </div>
   );
