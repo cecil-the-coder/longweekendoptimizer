@@ -1,12 +1,14 @@
-import HolidayForm from './components/HolidayForm';
+import { useState } from 'react';
 import HolidayList from './components/HolidayList';
 import RecommendationsSection from './components/RecommendationsSection';
-import PredefinedHolidays from './components/PredefinedHolidays';
+import AddHolidaysPanel from './components/AddHolidaysPanel';
 import ErrorBoundary from './components/ErrorBoundary';
 import { HolidayProvider } from './context/HolidayContext';
 import './App.css';
 
 function App() {
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+
   return (
     <ErrorBoundary>
       <HolidayProvider>
@@ -28,40 +30,24 @@ function App() {
                 <HolidayList />
               </ErrorBoundary>
 
-              {/* Holiday Input Section */}
+              {/* Add Holidays Button */}
               <div className="w-full max-w-2xl mx-auto">
-                <details className="group">
-                  <summary className="cursor-pointer list-none">
-                    <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
-                      <div>
-                        <h2 className="text-lg font-semibold text-gray-900">Add Holidays</h2>
-                        <p className="text-sm text-gray-600">Quick add or manually enter holidays</p>
-                      </div>
-                      <svg
-                        className="w-6 h-6 text-gray-600 transition-transform group-open:rotate-180"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </summary>
-
-                  <div className="mt-4 space-y-8">
-                    <ErrorBoundary>
-                      <PredefinedHolidays />
-                    </ErrorBoundary>
-
-                    <ErrorBoundary>
-                      <HolidayForm />
-                    </ErrorBoundary>
-                  </div>
-                </details>
+                <button
+                  onClick={() => setIsPanelOpen(true)}
+                  className="w-full flex items-center justify-center gap-2 p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span className="font-medium">Add Holidays</span>
+                </button>
               </div>
             </main>
           </div>
         </div>
+
+        {/* Floating Panel */}
+        <AddHolidaysPanel isOpen={isPanelOpen} onClose={() => setIsPanelOpen(false)} />
       </HolidayProvider>
     </ErrorBoundary>
   );
