@@ -147,8 +147,28 @@ export function calculateRecommendations(holidays: Holiday[]): Recommendation[] 
   for (const holiday of validHolidays) {
     const dayOfWeek = getDayOfWeek(holiday.date);
 
+    // Handle Monday holidays - recommend Friday before off
+    // Creates Fri-Sat-Sun-Mon (4-day weekend)
+    if (dayOfWeek === 'Monday') {
+      const fridayDate = addDays(holiday.date, -3); // Friday before (3 days back)
+      const fridayDayOfWeek = getDayOfWeek(fridayDate);
+
+      // Only recommend if Friday is not already a holiday
+      if (!holidayDateSet.has(fridayDate)) {
+        recommendations.push({
+          holidayName: holiday.name,
+          holidayDate: holiday.date,
+          holidayDayOfWeek: dayOfWeek,
+          recommendedDate: fridayDate,
+          recommendedDay: fridayDayOfWeek,
+          explanation: '→ 4-day weekend (Fri-Sat-Sun-Mon)'
+        });
+      }
+    }
+
     // Handle Tuesday holidays - recommend Monday off
-    if (dayOfWeek === 'Tuesday') {
+    // Creates Sat-Sun-Mon-Tue (4-day weekend)
+    else if (dayOfWeek === 'Tuesday') {
       const mondayDate = addDays(holiday.date, -1); // Monday before
       const mondayDayOfWeek = getDayOfWeek(mondayDate);
 
@@ -160,12 +180,13 @@ export function calculateRecommendations(holidays: Holiday[]): Recommendation[] 
           holidayDayOfWeek: dayOfWeek,
           recommendedDate: mondayDate,
           recommendedDay: mondayDayOfWeek,
-          explanation: '→ 4-day weekend'
+          explanation: '→ 4-day weekend (Sat-Sun-Mon-Tue)'
         });
       }
     }
 
     // Handle Thursday holidays - recommend Friday off
+    // Creates Thu-Fri-Sat-Sun (4-day weekend)
     else if (dayOfWeek === 'Thursday') {
       const fridayDate = addDays(holiday.date, 1); // Friday after
       const fridayDayOfWeek = getDayOfWeek(fridayDate);
@@ -178,13 +199,32 @@ export function calculateRecommendations(holidays: Holiday[]): Recommendation[] 
           holidayDayOfWeek: dayOfWeek,
           recommendedDate: fridayDate,
           recommendedDay: fridayDayOfWeek,
-          explanation: '→ 4-day weekend'
+          explanation: '→ 4-day weekend (Thu-Fri-Sat-Sun)'
         });
       }
     }
 
-    // Monday, Wednesday, Friday holidays don't generate recommendations
-    // (no action needed - skip these)
+    // Handle Friday holidays - recommend Monday after off
+    // Creates Fri-Sat-Sun-Mon (4-day weekend)
+    else if (dayOfWeek === 'Friday') {
+      const mondayDate = addDays(holiday.date, 3); // Monday after (3 days forward)
+      const mondayDayOfWeek = getDayOfWeek(mondayDate);
+
+      // Only recommend if Monday is not already a holiday
+      if (!holidayDateSet.has(mondayDate)) {
+        recommendations.push({
+          holidayName: holiday.name,
+          holidayDate: holiday.date,
+          holidayDayOfWeek: dayOfWeek,
+          recommendedDate: mondayDate,
+          recommendedDay: mondayDayOfWeek,
+          explanation: '→ 4-day weekend (Fri-Sat-Sun-Mon)'
+        });
+      }
+    }
+
+    // Wednesday holidays don't generate recommendations (would need 2 days off)
+    // Saturday/Sunday holidays are already part of the weekend
   }
 
   // Sort recommendations by holiday date for consistent output

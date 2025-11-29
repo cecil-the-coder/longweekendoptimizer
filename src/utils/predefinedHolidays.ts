@@ -10,9 +10,9 @@ export interface PredefinedHoliday {
 export const PREDEFINED_HOLIDAYS: PredefinedHoliday[] = [
   // USA Holidays
   { name: "New Year's Day", date: "01-01", country: "USA" },
-  { name: "Martin Luther King Jr. Day", date: "01-20", country: "USA" }, // Third Monday of January (approximate)
-  { name: "Presidents' Day", date: "02-17", country: "USA" }, // Third Monday of February (approximate)
-  { name: "Memorial Day", date: "05-26", country: "USA" }, // Last Monday of May (approximate)
+  { name: "Martin Luther King Jr. Day", date: "01-19", country: "USA" }, // Third Monday of January (2026)
+  { name: "Presidents' Day", date: "02-16", country: "USA" }, // Third Monday of February (2026)
+  { name: "Memorial Day", date: "05-25", country: "USA" }, // Last Monday of May (2026)
   { name: "Juneteenth", date: "06-19", country: "USA" },
   { name: "Independence Day", date: "07-04", country: "USA" },
   { name: "Labor Day", date: "09-01", country: "USA" }, // First Monday of September (approximate)
