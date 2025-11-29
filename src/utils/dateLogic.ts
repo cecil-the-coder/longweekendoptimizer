@@ -162,8 +162,89 @@ const findHolidayClusters = (holidays: Holiday[], holidayDateSet: Set<string>): 
 
     const workDaysBetween = getWorkDaysBetween(holiday1.date, holiday2.date);
 
+    // Handle consecutive holidays (0 work days between) - suggest extending
+    if (workDaysBetween === 0) {
+      const day1 = getDayOfWeek(holiday1.date);
+      const day2 = getDayOfWeek(holiday2.date);
+
+      // Parse dates for day of week calculations
+      const [y1, m1, d1] = holiday1.date.split('-').map(Number);
+      const [y2, m2, d2] = holiday2.date.split('-').map(Number);
+      const day1Num = new Date(y1, m1 - 1, d1).getDay();
+      const day2Num = new Date(y2, m2 - 1, d2).getDay();
+
+      // For Wed+Thu (like NYE+NYD): Recommend Friday after for 6 days, or Tue+Fri for 7 days
+      if (day1Num === 3 && day2Num === 4) { // Wednesday + Thursday
+        const fridayAfter = addDays(holiday2.date, 1);
+        const tuesdayBefore = addDays(holiday1.date, -1);
+
+        // Option 1: Take Friday after (6-day weekend)
+        if (!holidayDateSet.has(fridayAfter)) {
+          recommendations.push({
+            holidayName: `${holiday1.name} + ${holiday2.name}`,
+            holidayDate: holiday1.date,
+            holidayDayOfWeek: day1,
+            recommendedDate: fridayAfter,
+            recommendedDay: getDayOfWeek(fridayAfter),
+            explanation: '→ 6-day vacation (Wed-Thu-Fri-Sat-Sun-Mon)',
+            isGrouped: true,
+            groupedHolidays: [holiday1.name, holiday2.name],
+            daysToTakeOff: 1
+          });
+        }
+
+        // Option 2: Take Tuesday before + Friday after (7-day vacation)
+        if (!holidayDateSet.has(tuesdayBefore) && !holidayDateSet.has(fridayAfter)) {
+          recommendations.push({
+            holidayName: `${holiday1.name} + ${holiday2.name}`,
+            holidayDate: holiday1.date,
+            holidayDayOfWeek: day1,
+            recommendedDate: `${tuesdayBefore}, ${fridayAfter}`,
+            recommendedDay: '2 days',
+            explanation: '→ 7-day vacation (Tue-Wed-Thu-Fri-Sat-Sun-Mon)',
+            isGrouped: true,
+            groupedHolidays: [holiday1.name, holiday2.name],
+            daysToTakeOff: 2
+          });
+        }
+      }
+      // For Thu+Fri: Recommend Monday after to get Thu-Fri-Sat-Sun-Mon-Tue (6 days)
+      else if (day1Num === 4 && day2Num === 5) { // Thursday + Friday
+        const mondayAfter = addDays(holiday2.date, 3);
+        if (!holidayDateSet.has(mondayAfter)) {
+          recommendations.push({
+            holidayName: `${holiday1.name} + ${holiday2.name}`,
+            holidayDate: holiday1.date,
+            holidayDayOfWeek: day1,
+            recommendedDate: mondayAfter,
+            recommendedDay: getDayOfWeek(mondayAfter),
+            explanation: '→ 6-day vacation (Thu-Fri-Sat-Sun-Mon-Tue)',
+            isGrouped: true,
+            groupedHolidays: [holiday1.name, holiday2.name],
+            daysToTakeOff: 1
+          });
+        }
+      }
+      // For Mon+Tue: Recommend Friday before to get Fri-Sat-Sun-Mon-Tue-Wed (6 days)
+      else if (day1Num === 1 && day2Num === 2) { // Monday + Tuesday
+        const fridayBefore = addDays(holiday1.date, -3);
+        if (!holidayDateSet.has(fridayBefore)) {
+          recommendations.push({
+            holidayName: `${holiday1.name} + ${holiday2.name}`,
+            holidayDate: holiday1.date,
+            holidayDayOfWeek: day1,
+            recommendedDate: fridayBefore,
+            recommendedDay: getDayOfWeek(fridayBefore),
+            explanation: '→ 6-day vacation (Fri-Sat-Sun-Mon-Tue-Wed)',
+            isGrouped: true,
+            groupedHolidays: [holiday1.name, holiday2.name],
+            daysToTakeOff: 1
+          });
+        }
+      }
+    }
     // If holidays are within 1-4 work days apart, suggest bridging them
-    if (workDaysBetween > 0 && workDaysBetween <= 4) {
+    else if (workDaysBetween > 0 && workDaysBetween <= 4) {
       const day1 = getDayOfWeek(holiday1.date);
       const day2 = getDayOfWeek(holiday2.date);
 
