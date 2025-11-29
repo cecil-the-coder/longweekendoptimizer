@@ -1,6 +1,7 @@
 import HolidayForm from './components/HolidayForm';
 import HolidayList from './components/HolidayList';
 import RecommendationsSection from './components/RecommendationsSection';
+import PredefinedHolidays from './components/PredefinedHolidays';
 import ErrorBoundary from './components/ErrorBoundary';
 import { HolidayProvider } from './context/HolidayContext';
 import './App.css';
@@ -19,6 +20,10 @@ function App() {
             <main className="space-y-8">
               <ErrorBoundary>
                 <HolidayForm />
+              </ErrorBoundary>
+
+              <ErrorBoundary>
+                <PredefinedHolidays />
               </ErrorBoundary>
 
               <ErrorBoundary>
