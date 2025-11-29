@@ -103,9 +103,11 @@ const validateAndCleanHolidayArray = (data: any): Holiday[] => {
 
   // If we found corrupted items, log it but continue with valid ones
   if (validHolidays.length < corruptedCount) {
-    console.warn(
-      `Data corruption detected: removed ${corruptedCount - validHolidays.length} invalid holiday entries out of ${corruptedCount} total`
-    );
+    if (import.meta.env.DEV) {
+      console.warn(
+        `Data corruption detected: removed ${corruptedCount - validHolidays.length} invalid holiday entries out of ${corruptedCount} total`
+      );
+    }
   }
 
   return validHolidays;
@@ -143,7 +145,9 @@ export const getStorageQuotaInfo = (): { used: number; available?: number; total
 export const loadHolidays = (): { holidays: Holiday[]; error: StorageError | null; hadCorruption: boolean } => {
   // Feature detection: if localStorage is unavailable, return empty state
   if (!isLocalStorageAvailable()) {
-    console.warn('localStorage is not available, using in-memory state');
+    if (import.meta.env.DEV) {
+      console.warn('localStorage is not available, using in-memory state');
+    }
     return { holidays: [], error: null, hadCorruption: false };
   }
 
@@ -161,7 +165,9 @@ export const loadHolidays = (): { holidays: Holiday[]; error: StorageError | nul
 
     return { holidays: validHolidays, error: null, hadCorruption };
   } catch (error) {
-    console.error('Failed to load holidays from localStorage:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to load holidays from localStorage:', error);
+    }
 
     // Handle corruption errors specifically
     if (error instanceof SyntaxError) {
@@ -206,7 +212,9 @@ export const saveHolidays = (holidays: Holiday[]): StorageError | null => {
 
   // Feature detection: if localStorage is unavailable, return structured error
   if (!isLocalStorageAvailable()) {
-    console.warn('localStorage is not available, changes will not persist');
+    if (import.meta.env.DEV) {
+      console.warn('localStorage is not available, changes will not persist');
+    }
     return {
       type: 'SECURITY_ERROR',
       message: 'Storage unavailable',
@@ -220,13 +228,17 @@ export const saveHolidays = (holidays: Holiday[]): StorageError | null => {
     // Check if we're approaching quota limits (warn at 80% usage)
     const quotaInfo = getStorageQuota();
     if (quotaInfo.available && dataToSave.length > quotaInfo.available * 0.8) {
-      console.warn('Approaching storage quota limit');
+      if (import.meta.env.DEV) {
+        console.warn('Approaching storage quota limit');
+      }
     }
 
     localStorage.setItem(HOLIDAYS_STORAGE_KEY, dataToSave);
     return null; // Success, no error
   } catch (error) {
-    console.error('Failed to save holidays to localStorage:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to save holidays to localStorage:', error);
+    }
     const storageError = createStorageError(error, 'save');
     return storageError || {
       type: 'GENERIC_ERROR',

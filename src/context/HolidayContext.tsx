@@ -83,7 +83,9 @@ export const HolidayProvider: React.FC<{ children: ReactNode }> = ({ children })
 
         setRecommendations(sortedRecommendations);
       } catch (error) {
-        console.error('Error calculating recommendations:', error);
+        if (import.meta.env.DEV) {
+          console.error('Error calculating recommendations:', error);
+        }
         setRecommendationsError(error instanceof Error ? error : new Error('Failed to calculate recommendations'));
         setRecommendations([]);
       } finally {
