@@ -29,7 +29,7 @@ function App() {
               </ErrorBoundary>
 
               {/* Holiday Input Section */}
-              <div className="w-full max-w-4xl mx-auto">
+              <div className="w-full max-w-2xl mx-auto">
                 <details className="group">
                   <summary className="cursor-pointer list-none">
                     <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
