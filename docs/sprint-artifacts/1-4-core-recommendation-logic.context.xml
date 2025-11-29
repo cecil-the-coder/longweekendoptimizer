@@ -1,0 +1,251 @@
+<story-context id="{bmad_folder}/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>Core Recommendation Logic</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-27</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>/workspace/docs/sprint-artifacts/stories/Story-1.4-core-recommendation-logic.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>a developer</asA>
+    <iWant>a "recommendation engine" function</iWant>
+    <soThat>I can process the holiday list and identify all long-weekend opportunities</soThat>
+    <tasks>- [ ] Create dateLogic utility module with calculateRecommendations function (AC: 1, 2, 3, 4, 5, 6)
+  - [ ] Implement core algorithm for Tuesday/Thursday detection
+  - [ ] Implement duplicate day checking logic
+  - [ ] Add input validation and error handling
+  - [ ] Define Recommendation interface with proper TypeScript types
+- [ ] Create comprehensive unit test suite for dateLogic module (AC: 1, 2, 3, 4, 5, 6, 7)
+  - [ ] Test Tuesday holiday recommendations
+  - [ ] Test Thursday holiday recommendations
+  - [ ] Test empty array input handling
+  - [ ] Test duplicate holiday avoidance
+  - [ ] Test edge cases (malformed dates, invalid inputs)
+  - [ ] Achieve >95% code coverage</tasks>
+  </story>
+
+  <acceptanceCriteria>1. `calculateRecommendations()` function correctly identifies holidays falling on Tuesday
+2. `calculateRecommendations()` function correctly identifies holidays falling on Thursday
+3. Function outputs structured recommendations with holiday name and recommended date off
+4. Function returns empty array when input contains no qualifying holidays
+5. Function does not recommend days that are already in the holiday list
+6. Function handles edge cases (empty input, malformed dates) gracefully
+7. All recommendation logic is covered by unit tests with >95% code coverage</acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact>
+        <path>docs/prd/epic-1-foundation-core-functionality.md</path>
+        <title>Epic 1: Foundation & Core Functionality</title>
+        <section>Story 1.4: Core Recommendation Logic</section>
+        <snippet>As a developer, I want a "recommendation engine" function, so that I can process the holiday list and identify all long-weekend opportunities. Acceptance Criteria: A pure function (e.g., calculateRecommendations(holidays)) is created. The function correctly identifies holidays that fall on a Tuesday or Thursday. The function's output is a structured list of recommendations. The function does not recommend a day off if that day is already in the holiday list.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation & Core Functionality</title>
+        <section>Services and Modules</section>
+        <snippet>dateLogic: Core recommendation engine algorithm. Module Responsibility: Business Logic. Inputs: Holiday array. Outputs: Recommendation objects. The recommendation algorithm flow processes each holiday in input array, checking if it falls on Tuesday (recommend Monday off) or Thursday (recommend Friday off), ensuring the recommended day is not already in the holiday list.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Foundation & Core Functionality</title>
+        <section>Data Models and Contracts</section>
+        <snippet>Recommendation Interface: holidayName (string), holidayDate (YYYY-MM-DD), holidayDayOfWeek ("Tuesday" or "Thursday"), recommendedDate (YYYY-MM-DD), recommendedDay ("Monday" or "Friday"), explanation ("→ 4-day weekend"). Core Algorithm Interface: calculateRecommendations(holidays: Holiday[]): Recommendation[]</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture/project-structure.md</path>
+        <title>Project Structure</title>
+        <section>Module Location</section>
+        <snippet>The project follows a standard Vite + React + TS structure. /src/utils/dateLogic.ts - Core logic for Story 1.4. All logic must be client-side. The utils directory contains utility functions including the dateLogic module for core recommendation calculations.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture/testing-requirements.md</path>
+        <title>Testing Requirements</title>
+        <section>Test Template and Coverage</section>
+        <snippet>Use Vitest and React Testing Library for all unit tests. The primary focus is testing the core logic in dateLogic.ts (Story 1.4). Coverage Goals: Aim for 100% coverage on dateLogic.ts. Test Structure: Arrange-Act-Assert pattern. Component Test Template provided with examples for testing calculateRecommendations function.</snippet>
+      </artifact>
+    </docs>
+    <code>
+      <artifact>
+        <path>src/context/HolidayContext.tsx</path>
+        <kind>context</kind>
+        <symbol>Holiday</symbol>
+        <lines>11-15</lines>
+        <reason>Core Holiday interface used throughout the application. The new dateLogic module will work with this type.</reason>
+      </artifact>
+      <artifact>
+        <path>src/context/HolidayContext.tsx</path>
+        <kind>context</kind>
+        <symbol>HolidayContextType</symbol>
+        <lines>17-24</lines>
+        <reason>Context interface showing how manage holiday state. DateLogic will integrate with this pattern in Story 1.5.</reason>
+      </artifact>
+      <artifact>
+        <path>src/services/localStorageService.ts</path>
+        <kind>service</kind>
+        <symbol>StorageError</symbol>
+        <lines>9-13</lines>
+        <reason>Error handling pattern used throughout the application for robust error management.</reason>
+      </artifact>
+      <artifact>
+        <path>src/services/localStorageService.ts</path>
+        <kind>service</kind>
+        <symbol>isValidHoliday</symbol>
+        <lines>76-87</lines>
+        <reason>Validation pattern for ensuring data integrity. Similar validation should be used in dateLogic for input validation.</reason>
+      </artifact>
+      <artifact>
+        <path>src/utils/__tests__/example.test.ts</path>
+        <kind>test</kind>
+        <symbol>test examples</symbol>
+        <lines>1-19</lines>
+        <reason>Testing patterns using Vitest framework with describe/it/expect structure for dateLogic tests.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <ecosystem name="Core Framework">
+        <package name="react" version="^18.2.0" purpose="UI library with hooks support" />
+        <package name="react-dom" version="^18.2.0" purpose="Browser DOM rendering" />
+        <package name="typescript" version="^5.2.2" purpose="Type safety and development experience" />
+        <package name="vite" version="^5.2.0" purpose="Fast development server and bundler" />
+      </ecosystem>
+      <ecosystem name="Testing">
+        <package name="vitest" version="^1.4.0" purpose="Unit testing framework with TypeScript support" />
+        <package name="@testing-library/react" version="^14.2.1" purpose="React component testing utilities" />
+        <package name="@testing-library/jest-dom" version="^6.1.5" purpose="DOM testing matchers" />
+        <package name="@testing-library/user-event" version="^14.5.2" purpose="User interaction simulation" />
+        <package name="@vitest/ui" version="^1.4.0" purpose="Visual test runner interface" />
+        <package name="jsdom" version="^24.0.0" purpose="DOM environment for testing" />
+        <package name="@faker-js/faker" version="^10.1.0" purpose="Test data generation" />
+      </ecosystem>
+      <ecosystem name="Development Tooling">
+        <package name="eslint" version="^8.57.0" purpose="Code quality and style enforcement" />
+        <package name="@typescript-eslint/eslint-plugin" version="^7.2.0" purpose="TypeScript linting rules" />
+        <package name="@typescript-eslint/parser" version="^7.2.0" purpose="TypeScript parsing for ESLint" />
+        <package name="eslint-plugin-react-hooks" version="^4.6.0" purpose="React hooks linting rules" />
+        <package name="eslint-plugin-react-refresh" version="^0.4.6" purpose="React HMR linting" />
+        <package name="prettier" version="^3.2.5" purpose="Code formatting and consistency" />
+      </ecosystem>
+      <ecosystem name="Browser APIs">
+        <api name="localStorage" purpose="Holiday list persistence" />
+        <api name="crypto.randomUUID()" purpose="Unique holiday identification" />
+        <api name="Date object" purpose="Date calculations and formatting" />
+      </ecosystem>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>
+      <name>Module Location</name>
+      <description>Create dateLogic.ts in /src/utils/ directory following established project structure</description>
+    </constraint>
+    <constraint>
+      <name>Function Signature</name>
+      <description>Implement calculateRecommendations(holidays: Holiday[]): Recommendation[] as pure function</description>
+    </constraint>
+    <constraint>
+      <name>TypeScript Strict Typing</name>
+      <description>Use strict TypeScript types with Recommendation interface as defined in tech spec</description>
+    </constraint>
+    <constraint>
+      <name>Input Validation</name>
+      <description>Follow localStorageService validation pattern for robust error handling and data integrity</description>
+    </constraint>
+    <constraint>
+      <name>Client Side Only</name>
+      <description>All logic must run client-side using browser Date API, no backend dependencies</description>
+    </constraint>
+    <constraint>
+      <name>Performance</name>
+      <description>O(n) algorithm performance for processing 50+ holidays in under 10ms</description>
+    </constraint>
+    <constraint>
+      <name>Date Handling</name>
+      <description>Use user's local timezone consistently with ISO date string format (YYYY-MM-DD)</description>
+    </constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Holiday</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface Holiday { id: string; name: string; date: string; }</signature>
+      <path>src/context/HolidayContext.tsx</path>
+    </interface>
+    <interface>
+      <name>Recommendation</name>
+      <kind>TypeScript Interface</kind>
+      <signature>interface Recommendation { holidayName: string; holidayDate: string; holidayDayOfWeek: string; recommendedDate: string; recommendedDay: string; explanation: string; }</signature>
+      <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+    </interface>
+    <interface>
+      <name>calculateRecommendations</name>
+      <kind>Function Signature</kind>
+      <signature>function calculateRecommendations(holidays: Holiday[]): Recommendation[]</signature>
+      <path>docs/sprint-artifacts/tech-spec-epic-1.md</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Use Vitest with TypeScript support and React Testing Library for testing. Follow Arrange-Act-Assert pattern. Aim for 100% line coverage on dateLogic.ts as specified in architecture requirements. Test files should be co-located with source files in __tests__ directories. All business logic edge cases must be covered including error conditions and boundary values.</standards>
+    <locations>
+      <location>/src/utils/__tests__/dateLogic.test.ts - Primary test file for the dateLogic module</location>
+      <location>/src/utils/ - Main directory for dateLogic.ts implementation</location>
+      <location>Vitest watch mode during development for immediate feedback</location>
+      <location>Run 'npm run test:coverage' to verify >95% code coverage requirement</location>
+    </locations>
+    <ideas>
+      <test-case id="AC1" description="Tuesday holiday recommendations">
+        <scenario>Holiday on Tuesday should recommend Monday off</scenario>
+        <input>[{ id: '1', name: 'New Year', date: '2025-01-07' }]</input>
+        <expected>Recommendation object with recommendedDate: '2025-01-06', recommendedDay: 'Monday'</expected>
+      </test-case>
+      <test-case id="AC2" description="Thursday holiday recommendations">
+        <scenario>Holiday on Thursday should recommend Friday off</scenario>
+        <input>[{ id: '1', name: 'Thanksgiving', date: '2025-11-27' }]</input>
+        <expected>Recommendation object with recommendedDate: '2025-11-28', recommendedDay: 'Friday'</expected>
+      </test-case>
+      <test-case id="AC3" description="Structured output format">
+        <scenario>Verify recommendation object has all required fields with correct types</scenario>
+        <input>Any qualifying holiday</input>
+        <expected>Object with holidayName, holidayDate, holidayDayOfWeek, recommendedDate, recommendedDay, explanation fields</expected>
+      </test-case>
+      <test-case id="AC4" description="Empty array input">
+        <scenario>Function should return empty array when no holidays provided</scenario>
+        <input>[]</input>
+        <expected>[]</expected>
+      </test-case>
+      <test-case id="AC5" description="Duplicate day avoidance">
+        <scenario>Should not recommend Monday if Monday is already a holiday</scenario>
+        <input>[{ id: '1', name: 'Monday Holiday', date: '2025-01-06' }, { id: '2', name: 'Tuesday Holiday', date: '2025-01-07' }]</input>
+        <expected>Empty array (no Monday recommendation for Tuesday holiday)</expected>
+      </test-case>
+      <test-case id="AC5-alt" description="Duplicate Friday avoidance">
+        <scenario>Should not recommend Friday if Friday is already a holiday</scenario>
+        <input>[{ id: '1', name: 'Friday Holiday', date: '2025-01-10' }, { id: '2', name: 'Thursday Holiday', date: '2025-01-09' }]</input>
+        <expected>Empty array (no Friday recommendation for Thursday holiday)</expected>
+      </test-case>
+      <test-case id="AC6" description="Malformed date handling">
+        <scenario>Function should handle invalid date strings gracefully</scenario>
+        <input>[{ id: '1', name: 'Invalid Date', date: 'invalid-date' }]</input>
+        <expected>Empty array or error handling without crashing</expected>
+      </test-case>
+      <test-case id="edge-case-1" description="Non-qualifying weekdays">
+        <scenario>Holidays on Monday/Wednesday/Friday should not generate recommendations</scenario>
+        <input>[{ id: '1', name: 'Monday Holiday', date: '2025-01-06' }, { id: '2', name: 'Wednesday Holiday', date: '2025-01-08' }, { id: '3', name: 'Friday Holiday', date: '2025-01-10' }]</input>
+        <expected>[]</expected>
+      </test-case>
+      <test-case id="edge-case-2" description="Multiple qualifying holidays">
+        <scenario>Multiple Tuesday/Thursday holidays should generate multiple recommendations</scenario>
+        <input>[{ id: '1', name: 'Tuesday 1', date: '2025-01-07' }, { id: '2', name: 'Thursday 1', date: '2025-01-09' }, { id: '3', name: 'Tuesday 2', date: '2025-01-14' }]</input>
+        <expected>Array with 3 recommendation objects sorted by date</expected>
+      </test-case>
+      <test-case id="performance" description="Large dataset performance">
+        <scenario>Verify algorithm performs well with 50+ holidays</scenario>
+        <input>Array of 50+ holidays with various dates</input>
+        <expected>Processing time under 10ms, correct recommendations generated</expected>
+      </test-case>
+    </ideas>
+  </tests>
+</story-context>
