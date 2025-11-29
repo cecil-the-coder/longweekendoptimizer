@@ -17,6 +17,10 @@ export interface Recommendation {
   recommendedDate: string;
   recommendedDay: string;
   explanation: string;
+  // Optional fields for grouped holidays
+  isGrouped?: boolean;
+  groupedHolidays?: string[]; // Names of other holidays in the group
+  daysToTakeOff?: number; // Number of vacation days needed
 }
 
 /**
@@ -112,6 +116,102 @@ const createHolidayDateSet = (holidays: Holiday[]): Set<string> => {
 };
 
 /**
+ * Calculates the number of work days between two dates (excluding weekends)
+ *
+ * @param startDate - Start date in YYYY-MM-DD format
+ * @param endDate - End date in YYYY-MM-DD format
+ * @returns Number of work days (Mon-Fri) between the dates
+ */
+const getWorkDaysBetween = (startDate: string, endDate: string): number => {
+  const [y1, m1, d1] = startDate.split('-').map(Number);
+  const [y2, m2, d2] = endDate.split('-').map(Number);
+
+  const start = new Date(y1, m1 - 1, d1);
+  const end = new Date(y2, m2 - 1, d2);
+
+  let workDays = 0;
+  const current = new Date(start);
+  current.setDate(current.getDate() + 1); // Start from day after first date
+
+  while (current < end) {
+    const dayOfWeek = current.getDay();
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Not Saturday or Sunday
+      workDays++;
+    }
+    current.setDate(current.getDate() + 1);
+  }
+
+  return workDays;
+};
+
+/**
+ * Finds clusters of holidays that are close together (within 5 work days)
+ * and generates recommendations to bridge them
+ *
+ * @param holidays - Array of Holiday objects
+ * @param holidayDateSet - Set of holiday dates for O(1) lookup
+ * @returns Array of recommendations for bridging holiday clusters
+ */
+const findHolidayClusters = (holidays: Holiday[], holidayDateSet: Set<string>): Recommendation[] => {
+  const recommendations: Recommendation[] = [];
+  const sortedHolidays = [...holidays].sort((a, b) => a.date.localeCompare(b.date));
+
+  for (let i = 0; i < sortedHolidays.length - 1; i++) {
+    const holiday1 = sortedHolidays[i];
+    const holiday2 = sortedHolidays[i + 1];
+
+    const workDaysBetween = getWorkDaysBetween(holiday1.date, holiday2.date);
+
+    // If holidays are within 1-4 work days apart, suggest bridging them
+    if (workDaysBetween > 0 && workDaysBetween <= 4) {
+      const day1 = getDayOfWeek(holiday1.date);
+      const day2 = getDayOfWeek(holiday2.date);
+
+      // Calculate the bridge dates (work days between the holidays)
+      const bridgeDates: string[] = [];
+      const [y, m, d] = holiday1.date.split('-').map(Number);
+      const current = new Date(y, m - 1, d);
+      current.setDate(current.getDate() + 1);
+
+      const [y2, m2, d2] = holiday2.date.split('-').map(Number);
+      const endDate = new Date(y2, m2 - 1, d2);
+
+      while (current < endDate) {
+        const dayOfWeek = current.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Not weekend
+          const dateStr = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, '0')}-${String(current.getDate()).padStart(2, '0')}`;
+          if (!holidayDateSet.has(dateStr)) {
+            bridgeDates.push(dateStr);
+          }
+        }
+        current.setDate(current.getDate() + 1);
+      }
+
+      if (bridgeDates.length > 0 && bridgeDates.length <= 4) {
+        // Calculate total days off (including weekends)
+        const [y1, m1, d1] = holiday1.date.split('-').map(Number);
+        const [y2, m2, d2] = holiday2.date.split('-').map(Number);
+        const totalDays = Math.ceil((new Date(y2, m2-1, d2).getTime() - new Date(y1, m1-1, d1).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+
+        recommendations.push({
+          holidayName: `${holiday1.name} + ${holiday2.name}`,
+          holidayDate: holiday1.date,
+          holidayDayOfWeek: day1,
+          recommendedDate: bridgeDates.join(', '),
+          recommendedDay: `${bridgeDates.length} day${bridgeDates.length > 1 ? 's' : ''}`,
+          explanation: `→ ${totalDays}-day vacation (bridge ${workDaysBetween} work day${workDaysBetween > 1 ? 's' : ''})`,
+          isGrouped: true,
+          groupedHolidays: [holiday1.name, holiday2.name],
+          daysToTakeOff: bridgeDates.length
+        });
+      }
+    }
+  }
+
+  return recommendations;
+};
+
+/**
  * Main recommendation engine - analyzes holidays to create 4-day weekend opportunities
  *
  * Algorithm Flow:
@@ -143,7 +243,11 @@ export function calculateRecommendations(holidays: Holiday[]): Recommendation[] 
   const holidayDateSet = createHolidayDateSet(validHolidays);
   const recommendations: Recommendation[] = [];
 
-  // Process each holiday
+  // First, find holiday clusters that can be bridged
+  const clusterRecommendations = findHolidayClusters(validHolidays, holidayDateSet);
+  recommendations.push(...clusterRecommendations);
+
+  // Process each holiday for single-day recommendations
   for (const holiday of validHolidays) {
     const dayOfWeek = getDayOfWeek(holiday.date);
 
