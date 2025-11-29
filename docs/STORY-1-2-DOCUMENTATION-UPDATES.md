@@ -42,7 +42,7 @@ Story 1.2 introduced comprehensive holiday management functionality with localSt
 
 **Key Environment Variables:**
 ```
-VITE_HOLIDAY_STORAGE_KEY=long-weekend-optimizer-holidays
+VITE_HOLIDAY_STORAGE_KEY=holidayhacker-holidays
 VITE_ENABLE_HOLIDAY_VALIDATION=true
 VITE_ENABLE_STORAGE_ERROR_HANDLING=true
 VITE_ENABLE_RESPONSIVE_DESIGN=true
@@ -279,4 +279,4 @@ The documentation updates for Story 1.2 provide comprehensive coverage of all ne
 4. **Accessibility** - WCAG compliance and mobile optimization guidance
 5. **Future Development** - Extensible patterns and configuration options
 
-This documentation foundation supports the continued development of the Long Weekend Optimizer application while maintaining high standards for code quality, accessibility, and user experience.
+This documentation foundation supports the continued development of the HolidayHacker application while maintaining high standards for code quality, accessibility, and user experience.

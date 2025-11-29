@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
 /**
- * Vitest Configuration for Long Weekend Optimizer
+ * Vitest Configuration for HolidayHacker
  *
  * Unit testing with coverage reporting
  * Target: 95% overall, 100% on dateLogic.ts

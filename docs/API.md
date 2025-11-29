@@ -1,6 +1,6 @@
 # API Documentation
 
-This document provides detailed API documentation for the Long Weekend Optimizer application, focusing on the localStorage service, recommendation engine, and component interfaces implemented through Story 1.5.
+This document provides detailed API documentation for the HolidayHacker application, focusing on the localStorage service, recommendation engine, and component interfaces implemented through Story 1.5.
 
 ## Table of Contents
 
@@ -378,7 +378,7 @@ interface Recommendation {
 ## Storage Implementation Details
 
 ### Storage Key
-- **Key**: `long-weekend-optimizer-holidays`
+- **Key**: `holidayhacker-holidays`
 - **Format**: JSON string array of Holiday objects
 - **Environment**: Can be configured via `VITE_HOLIDAY_STORAGE_KEY`
 

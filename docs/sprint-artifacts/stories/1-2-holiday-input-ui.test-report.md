@@ -49,7 +49,7 @@
 
 - `src/__tests__/App.test.tsx` - 2 failures
   - Root cause: Outdated text expectations
-  - Looking for "Hello, World!" and "Welcome to Long Weekend Optimizer"
+  - Looking for "Hello, World!" and "Welcome to HolidayHacker"
   - Component renders different content
 
 **2. localStorageService Legacy Test Failures (12 failures)**
@@ -183,8 +183,8 @@ Error: Cannot read properties of undefined (reading 'success')
 ### 3. App Component Text Expectations (2 tests failing)
 
 **Outdated Test Assertions:**
-- Looking for "Hello, World!" but current app shows "Long Weekend Optimizer"
-- Looking for "Welcome to Long Weekend Optimizer" but different content rendered
+- Looking for "Hello, World!" but current app shows "HolidayHacker"
+- Looking for "Welcome to HolidayHacker" but different content rendered
 
 ---
 

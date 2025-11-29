@@ -23,7 +23,7 @@ describe('App Component', () => {
 
   it('renders main heading', () => {
     render(<App />)
-    expect(screen.getByText('Long Weekend Optimizer')).toBeInTheDocument()
+    expect(screen.getByText('HolidayHacker')).toBeInTheDocument()
   })
 
   it('renders subtitle', () => {
@@ -49,7 +49,7 @@ describe('App Component', () => {
     expect(mainContainer).toBeTruthy()
 
     // Check for header
-    const header = screen.getByRole('heading', { name: 'Long Weekend Optimizer' })
+    const header = screen.getByRole('heading', { name: 'HolidayHacker' })
     expect(header).toBeInTheDocument()
     expect(header).toHaveClass('text-3xl', 'font-bold', 'text-blue-700')
   })

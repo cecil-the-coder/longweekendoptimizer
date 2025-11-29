@@ -19,7 +19,7 @@ describe('AC6: Responsive design functions correctly on production hosting', () 
 
   beforeEach(() => {
     dom = new JSDOM('<!DOCTYPE html><html><body><div id="root"></div></body></html>', {
-      url: 'https://username.github.io/longweekendoptimizer',
+      url: 'https://holidayhacker.app',
       pretendToBeVisual: true,
       resources: 'usable'
     });
@@ -244,7 +244,7 @@ describe('AC6: Responsive design functions correctly on production hosting', () 
       // This test will FAIL until deployment is complete
       const cssLink = dom.window.document.querySelector('link[rel="stylesheet"]') as HTMLLinkElement;
       expect(cssLink).toBeTruthy();
-      expect(cssLink.href).toContain('/longweekendoptimizer/assets/');
+      expect(cssLink.href).toContain('/assets/');
 
       // CSS should load successfully
       const response = await fetch(cssLink.href);
@@ -266,7 +266,7 @@ describe('AC6: Responsive design functions correctly on production hosting', () 
 
     it('should have proper responsive breakpoints tested on production URL', async () => {
       // This test will FAIL until production deployment is accessible
-      const productionUrl = 'https://username.github.io/longweekendoptimizer';
+      const productionUrl = 'https://holidayhacker.app';
 
       // Test different viewports on production
       const viewports = [
@@ -283,7 +283,7 @@ describe('AC6: Responsive design functions correctly on production hosting', () 
         expect(response.ok).toBe(true);
 
         const html = await response.text();
-        expect(html).toContain('Long Weekend Optimizer');
+        expect(html).toContain('HolidayHacker');
       }
     });
   });

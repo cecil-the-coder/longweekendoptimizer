@@ -65,7 +65,7 @@ describe('Holiday Management Integration', () => {
       // THEN: Holiday should appear in the list
       await waitFor(() => {
         expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-          'long-weekend-optimizer-holidays',
+          'holidayhacker-holidays',
           expect.stringContaining('Thanksgiving')
         );
       });
@@ -95,7 +95,7 @@ describe('Holiday Management Integration', () => {
       // AND: Holiday should be deleted
       await waitFor(() => {
         expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-          'long-weekend-optimizer-holidays',
+          'holidayhacker-holidays',
           '[]'
         );
       });
@@ -212,7 +212,7 @@ describe('Holiday Management Integration', () => {
       // THEN: Should handle submission without issues
       await waitFor(() => {
         expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-          'long-weekend-optimizer-holidays',
+          'holidayhacker-holidays',
           expect.stringContaining(longName)
         );
       });
@@ -240,7 +240,7 @@ describe('Holiday Management Integration', () => {
       // THEN: Should preserve special characters
       await waitFor(() => {
         expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-          'long-weekend-optimizer-holidays',
+          'holidayhacker-holidays',
           expect.stringContaining(specialName)
         );
       });
@@ -313,7 +313,7 @@ describe('Holiday Management Integration', () => {
       // THEN: localStorage should be updated
       await waitFor(() => {
         expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-          'long-weekend-optimizer-holidays',
+          'holidayhacker-holidays',
           '[]'
         );
       });

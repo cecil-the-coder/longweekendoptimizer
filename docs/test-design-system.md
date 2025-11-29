@@ -2,7 +2,7 @@
 
 **Date:** 2025-11-22
 **Author:** BMad
-**Project:** Long Weekend Optimizer
+**Project:** HolidayHacker
 **Phase:** Phase 3 (Solutioning) - System-Level Testability Review
 **Status:** Review Required
 

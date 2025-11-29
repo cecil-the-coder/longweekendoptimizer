@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Mobile Panel View', () => {
   test('check Add Holidays panel on mobile', async ({ page }) => {
-    const DEPLOYED_URL = 'https://cecil-the-coder.github.io/longweekendoptimizer/';
+    const DEPLOYED_URL = 'https://holidayhacker.app/';
 
     // Set mobile viewport (iPhone 12 Pro)
     await page.setViewportSize({ width: 390, height: 844 });
@@ -47,7 +47,7 @@ test.describe('Mobile Panel View', () => {
   });
 
   test('check Add Holidays panel on tablet', async ({ page }) => {
-    const DEPLOYED_URL = 'https://cecil-the-coder.github.io/longweekendoptimizer/';
+    const DEPLOYED_URL = 'https://holidayhacker.app/';
 
     // Set tablet viewport (iPad)
     await page.setViewportSize({ width: 768, height: 1024 });

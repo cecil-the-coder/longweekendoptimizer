@@ -12,7 +12,7 @@ test.describe('Story 1.1: Project Setup - E2E Tests', () => {
     expect(response?.status()).toBe(200);
     // Verify Vite-specific dev server headers or content
     const htmlContent = await page.content();
-    expect(htmlContent).toContain('Long Weekend Optimizer');
+    expect(htmlContent).toContain('HolidayHacker');
   });
 
   test('should render HelloWorld component on main page', async ({ page }) => {
@@ -24,9 +24,9 @@ test.describe('Story 1.1: Project Setup - E2E Tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for HelloWorld component content
-    await expect(page.locator('text=Long Weekend Optimizer')).toBeVisible();
+    await expect(page.locator('text=HolidayHacker')).toBeVisible();
     await expect(page.locator('text=Hello, World!')).toBeVisible();
-    await expect(page.locator('[data-testid="welcome-message"]')).toContainText('Welcome to Long Weekend Optimizer');
+    await expect(page.locator('[data-testid="welcome-message"]')).toContainText('Welcome to HolidayHacker');
   });
 
   test('should allow interaction with HelloWorld component', async ({ page }) => {

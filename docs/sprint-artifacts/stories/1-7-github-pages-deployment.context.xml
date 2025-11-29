@@ -12,7 +12,7 @@
 
   <story>
     <asA>a project maintainer</asA>
-    <iWant>the Long Weekend Optimizer automatically deployed to GitHub Pages</iWant>
+    <iWant>the HolidayHacker automatically deployed to GitHub Pages</iWant>
     <soThat>users can access the application publicly and I can demo the working product</soThat>
     <tasks>- Create GitHub Actions workflow file (AC: 1)
   - Set up build stage with npm ci and npm run build
@@ -56,9 +56,9 @@
 
   <artifacts>
     <docs>
-      <doc path="docs/architecture.md" title="Long Weekend Optimizer - Architecture Documentation" section="Deployment Strategy" snippet="The application follows a pure static site architecture with GitHub Pages configuration including build output to /dist directory, source from main branch, automatic deployment on commit, zero-cost static hosting with HTTPS, and SPA routing via 404.html fallback." />
-      <doc path="docs/architecture.md" title="Long Weekend Optimizer - Architecture Documentation" section="CI/CD Pipeline" snippet="GitHub Actions Workflow (.github/workflows/deploy.yml): Trigger on push to main branch, build with npm ci &amp;&amp; npm run build, deploy to gh-pages branch, resulting in automatic production deployment." />
-      <doc path="docs/architecture.md" title="Long Weekend Optimizer - Architecture Documentation" section="Environment Configuration" snippet="Production configuration includes optimized static assets, minified bundles, proper asset path resolution, and SPA routing safety." />
+      <doc path="docs/architecture.md" title="HolidayHacker - Architecture Documentation" section="Deployment Strategy" snippet="The application follows a pure static site architecture with GitHub Pages configuration including build output to /dist directory, source from main branch, automatic deployment on commit, zero-cost static hosting with HTTPS, and SPA routing via 404.html fallback." />
+      <doc path="docs/architecture.md" title="HolidayHacker - Architecture Documentation" section="CI/CD Pipeline" snippet="GitHub Actions Workflow (.github/workflows/deploy.yml): Trigger on push to main branch, build with npm ci &amp;&amp; npm run build, deploy to gh-pages branch, resulting in automatic production deployment." />
+      <doc path="docs/architecture.md" title="HolidayHacker - Architecture Documentation" section="Environment Configuration" snippet="Production configuration includes optimized static assets, minified bundles, proper asset path resolution, and SPA routing safety." />
       <doc path="docs/prd/epic-1-foundation-core-functionality.md" title="Epic 1: Foundation &amp; Core Functionality" section="Epic Context" snippet="This epic covers the entire MVP. It will establish the project, allow users to input and manage their holidays, and provide the core value by recommending long weekends." />
     </docs>
     <code>

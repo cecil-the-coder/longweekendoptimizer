@@ -1,7 +1,7 @@
 # Deployed Site Review Report
-**Long Weekend Optimizer - Production Deployment**
+**HolidayHacker - Production Deployment**
 **Date:** 2025-11-28
-**Deployment URL:** https://cecil-the-coder.github.io/longweekendoptimizer/
+**Deployment URL:** https://cecil-the-coder.github.io/holidayhacker/
 **Reviewer:** Claude Code (BMAD Workflow)
 **Story:** 1.7 - GitHub Pages Deployment Pipeline
 
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-The Long Weekend Optimizer has been successfully deployed to GitHub Pages and is fully functional in production. The deployment implements all 6 acceptance criteria from Story 1.7, providing users with a robust, accessible, and performant web application for optimizing long weekend holidays.
+The HolidayHacker has been successfully deployed to GitHub Pages and is fully functional in production. The deployment implements all 6 acceptance criteria from Story 1.7, providing users with a robust, accessible, and performant web application for optimizing long weekend holidays.
 
 **Overall Status:** ✅ **PRODUCTION READY**
 
@@ -23,7 +23,7 @@ The Long Weekend Optimizer has been successfully deployed to GitHub Pages and is
 **Result:** PASSED
 
 ```bash
-curl -I https://cecil-the-coder.github.io/longweekendoptimizer/
+curl -I https://cecil-the-coder.github.io/holidayhacker/
 HTTP/2 200
 server: GitHub.com
 content-type: text/html; charset=utf-8
@@ -160,7 +160,7 @@ x-github-request-id: ...
 **✅ Production Optimizations:**
 ```typescript
 // vite.config.ts
-base: '/longweekendoptimizer/'  // GitHub Pages repository path
+base: '/holidayhacker/'  // GitHub Pages repository path
 build: {
   minify: 'terser',
   sourcemap: true,
@@ -294,7 +294,7 @@ User-facing deployment documentation has been created at:
 
 ### ✅ Production Approval
 
-The Long Weekend Optimizer is **APPROVED FOR PRODUCTION USE** with the following confidence levels:
+The HolidayHacker is **APPROVED FOR PRODUCTION USE** with the following confidence levels:
 
 **High Confidence Areas:**
 - Core functionality and user experience
@@ -318,7 +318,7 @@ The Long Weekend Optimizer is **APPROVED FOR PRODUCTION USE** with the following
 
 ## Conclusion
 
-The GitHub Pages deployment implementation for Story 1.7 successfully completes the MVP development lifecycle for the Long Weekend Optimizer. The application demonstrates:
+The GitHub Pages deployment implementation for Story 1.7 successfully completes the MVP development lifecycle for the HolidayHacker. The application demonstrates:
 
 - **Reliable automated deployment** via GitHub Actions
 - **Robust user experience** with comprehensive error handling
@@ -326,7 +326,7 @@ The GitHub Pages deployment implementation for Story 1.7 successfully completes 
 - **Secure and accessible** implementation following web best practices
 - **Comprehensive documentation** for maintenance and future development
 
-The deployed application at https://cecil-the-coder.github.io/longweekendoptimizer/ is ready for public use and demonstration purposes.
+The deployed application at https://cecil-the-coder.github.io/holidayhacker/ is ready for public use and demonstration purposes.
 
 ---
 

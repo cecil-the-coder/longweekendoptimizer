@@ -27,7 +27,7 @@ export interface DevEnvironment {
 }
 
 export const createProjectConfig = (overrides: Partial<ProjectConfig> = {}): ProjectConfig => ({
-  projectName: 'Long Weekend Optimizer',
+  projectName: 'HolidayHacker',
   version: '1.0.0',
   description: 'A React application for optimizing long weekends',
   author: 'Development Team',
@@ -38,7 +38,7 @@ export const createProjectConfig = (overrides: Partial<ProjectConfig> = {}): Pro
 export const createComponentConfig = (overrides: Partial<ComponentConfig> = {}): ComponentConfig => ({
   name: 'World',
   greeting: 'Hello',
-  welcomeMessage: 'Welcome to Long Weekend Optimizer',
+  welcomeMessage: 'Welcome to HolidayHacker',
   initialCount: 0,
   ...overrides,
 });

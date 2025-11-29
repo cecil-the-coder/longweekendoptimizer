@@ -67,7 +67,7 @@ describe('AC5: Local storage functionality works in deployed environment', () =>
 
       expect(result).toBeNull();
       expect(localStorageSpy.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         JSON.stringify(holidays)
       );
     });
@@ -315,7 +315,7 @@ describe('AC5: Local storage functionality works in deployed environment', () =>
       saveHolidays(holidays);
 
       expect(localStorageSpy.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         expect.stringContaining('Test Holiday')
       );
     });

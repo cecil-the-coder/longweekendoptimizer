@@ -508,7 +508,7 @@ describe('localStorageService - Enhanced Edge Cases and Error Paths', () => {
       it('should handle localStorage with different implementations', () => {
         // Simulate localStorage that returns undefined for missing keys
         mockLocalStorage.getItem.mockImplementation((key) => {
-          if (key === 'long-weekend-optimizer-holidays') return undefined;
+          if (key === 'holidayhacker-holidays') return undefined;
           return null;
         });
 
@@ -525,7 +525,7 @@ describe('localStorageService - Enhanced Edge Cases and Error Paths', () => {
 
   describe('Error Recovery and Cleanup', () => {
     it('should clear corrupted data automatically', () => {
-      const corruptedKey = 'long-weekend-optimizer-holidays';
+      const corruptedKey = 'holidayhacker-holidays';
       mockLocalStorage.getItem.mockReturnValue('invalid json {]');
       const removeItemSpy = vi.spyOn(mockLocalStorage, 'removeItem');
 

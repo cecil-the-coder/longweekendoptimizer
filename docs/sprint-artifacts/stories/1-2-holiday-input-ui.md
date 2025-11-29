@@ -250,7 +250,7 @@ if (!isLocalStorageAvailable()) {
   // Before: result.success, result.error properties
   // After:  expect(() => saveHolidays(holidays)).not.toThrow()
   ```
-- **Fixed Storage Key**: Updated from `longWeekendApp:holidays` to `long-weekend-optimizer-holidays`
+- **Fixed Storage Key**: Updated from `longWeekendApp:holidays` to `holidayhacker-holidays`
 - **Removed Missing Function**: Removed tests for `clearHolidays` function (doesn't exist in current implementation)
 - **Enhanced Error Handling**: Added comprehensive testing for all error scenarios
   - QuotaExceededError, SecurityError, generic errors
@@ -262,8 +262,8 @@ if (!isLocalStorageAvailable()) {
 **Solution Applied**:
 - **Updated Text Expectations**: Matched current application header
   ```typescript
-  // Before: 'Hello, World!' and 'Welcome to Long Weekend Optimizer'
-  // After:  'Long Weekend Optimizer' and 'Add your company holidays to find long weekends'
+  // Before: 'Hello, World!' and 'Welcome to HolidayHacker'
+  // After:  'HolidayHacker' and 'Add your company holidays to find long weekends'
   ```
 - **Added Component Mocking**: Isolated App component testing from children
   ```typescript

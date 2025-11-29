@@ -40,6 +40,25 @@ export const HolidayProvider: React.FC<{ children: ReactNode }> = ({ children })
   // Load from local storage on mount with enhanced error handling
   useEffect(() => {
     const loadInitialData = () => {
+      // Migrate data from old key (Long Weekend Optimizer) to new key (HolidayHacker)
+      const oldKey = 'long-weekend-optimizer-holidays';
+      const newKey = 'holidayhacker-holidays';
+      try {
+        const oldData = localStorage.getItem(oldKey);
+        if (oldData && !localStorage.getItem(newKey)) {
+          localStorage.setItem(newKey, oldData);
+          localStorage.removeItem(oldKey);
+          if (import.meta.env.DEV) {
+            console.log('Migrated data from Long Weekend Optimizer to HolidayHacker');
+          }
+        }
+      } catch (error) {
+        // Migration failed, but continue with normal load
+        if (import.meta.env.DEV) {
+          console.warn('Failed to migrate old data:', error);
+        }
+      }
+
       const storageAvailable = storage.isLocalStorageAvailable();
       setIsLocalStorageAvailable(storageAvailable);
 

@@ -3,8 +3,8 @@ import { test, expect } from '@playwright/test';
 /**
  * E2E Test Suite: Deployed Site Review
  *
- * This test suite reviews the deployed Long Weekend Optimizer application
- * at https://cecil-the-coder.github.io/longweekendoptimizer/
+ * This test suite reviews the deployed HolidayHacker application
+ * at https://holidayhacker.app/
  *
  * Tests verify:
  * 1. Site accessibility and loading
@@ -14,8 +14,8 @@ import { test, expect } from '@playwright/test';
  * 5. Error handling and user feedback
  */
 
-test.describe('Deployed Site Review: Long Weekend Optimizer', () => {
-  const DEPLOYED_URL = 'https://cecil-the-coder.github.io/longweekendoptimizer/';
+test.describe('Deployed Site Review: HolidayHacker', () => {
+  const DEPLOYED_URL = 'https://holidayhacker.app/';
 
   test.beforeEach(async ({ page }) => {
     // Navigate to the deployed site
@@ -23,7 +23,7 @@ test.describe('Deployed Site Review: Long Weekend Optimizer', () => {
   });
 
   test('site loads successfully with proper page title', async ({ page }) => {
-    await expect(page).toHaveTitle(/Long Weekend Optimizer/);
+    await expect(page).toHaveTitle(/HolidayHacker/);
 
     // Check that the main application container is present
     await expect(page.locator('body')).toBeVisible();
@@ -31,7 +31,7 @@ test.describe('Deployed Site Review: Long Weekend Optimizer', () => {
 
   test('main application interface is visible', async ({ page }) => {
     // Check for the main heading
-    await expect(page.locator('h1')).toContainText('Long Weekend Optimizer');
+    await expect(page.locator('h1')).toContainText('HolidayHacker');
 
     // Check for holiday input form
     await expect(page.locator('form')).toBeVisible();
@@ -194,7 +194,7 @@ test.describe('Deployed Site Review: Long Weekend Optimizer', () => {
     });
 
     // Navigate to the page (since we're starting fresh)
-    await page.goto('https://cecil-the-coder.github.io/longweekendoptimizer/');
+    await page.goto('https://holidayhacker.app/');
     await page.waitForLoadState('networkidle');
 
     // Should have loaded bundled assets from the assets directory
@@ -205,7 +205,7 @@ test.describe('Deployed Site Review: Long Weekend Optimizer', () => {
     expect(jsRequests.length).toBeGreaterThan(0);
 
     // Verify the app loads properly by checking for main content
-    await expect(page.locator('h1')).toContainText('Long Weekend Optimizer');
+    await expect(page.locator('h1')).toContainText('HolidayHacker');
   });
 
   test('accessibility features are functional', async ({ page }) => {
@@ -221,7 +221,7 @@ test.describe('Deployed Site Review: Long Weekend Optimizer', () => {
     await expect(page.locator('label[for="holiday-date"]')).toBeVisible();
 
     // Verify main heading exists (h1 doesn't need explicit role attribute)
-    await expect(page.locator('h1')).toContainText('Long Weekend Optimizer');
+    await expect(page.locator('h1')).toContainText('HolidayHacker');
   });
 
   // Cross-browser compatibility testing

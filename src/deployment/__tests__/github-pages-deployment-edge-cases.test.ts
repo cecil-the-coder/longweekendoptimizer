@@ -26,7 +26,7 @@ describe('GitHub Pages Deployment Edge Cases', () => {
       const workflowContent = readFileSync(workflowPath, 'utf-8');
 
       // Workflow should be repository-name agnostic
-      expect(workflowContent).not.toContain('longweekendoptimizer');
+      expect(workflowContent).not.toContain('holidayhacker');
       expect(workflowContent).toContain('publish_dir: ./dist');
     });
 
@@ -84,7 +84,7 @@ describe('GitHub Pages Deployment Edge Cases', () => {
       const viteConfig = readFileSync(viteConfigPath, 'utf-8');
 
       // Should have configurable base path
-      expect(viteConfig).toContain('base: \'/longweekendoptimizer/\'');
+      expect(viteConfig).toContain('base: \'/holidayhacker/\'');
 
       // Pattern should be able to handle different repository names
       expect(viteConfig).toMatch(/base:\s*['"]\/[^\/]+\/['"]/);

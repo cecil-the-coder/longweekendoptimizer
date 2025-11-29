@@ -1,7 +1,7 @@
 # Sprint Change Proposal: GitHub Pages Deployment Capability
 
 **Date**: 2025-11-27
-**Project**: Long Weekend Optimizer
+**Project**: HolidayHacker
 **Change Type**: Deployment Infrastructure Addition
 **Scope**: Minor - Direct implementation by development team
 
@@ -10,12 +10,12 @@
 ## 1. Issue Summary
 
 ### Problem Statement
-The completed Long Weekend Optimizer application lacks an automated deployment pipeline to GitHub Pages, preventing public accessibility and demonstration of the working application.
+The completed HolidayHacker application lacks an automated deployment pipeline to GitHub Pages, preventing public accessibility and demonstration of the working application.
 
 ### Context
 - All Epic 1 stories (1.1-1.6) have been completed successfully
 - Application is fully functional and builds to static assets
-- Repository exists: `git@github.com:cecil-the-coder/longweekendoptimizer.git`
+- Repository exists: `git@github.com:cecil-the-coder/holidayhacker.git`
 - Current state: Development complete, no deployment automation
 
 ### Evidence
@@ -106,7 +106,7 @@ The completed Long Weekend Optimizer application lacks an automated deployment p
 ```
 ## Story 1.7: GitHub Pages Deployment Pipeline
 
-As a project maintainer, I want the Long Weekend Optimizer automatically deployed to GitHub Pages so that users can access the application publicly and I can demo the working product.
+As a project maintainer, I want the HolidayHacker automatically deployed to GitHub Pages so that users can access the application publicly and I can demo the working product.
 
 ### Acceptance Criteria:
 - [ ] GitHub Actions workflow automatically builds and deploys on main branch push
@@ -187,7 +187,7 @@ As a project maintainer, I want the Long Weekend Optimizer automatically deploye
 // If using project-based GitHub Pages (not custom domain):
 export default defineConfig({
   // ... existing config
-  base: '/longweekendoptimizer/', // Repository name
+  base: '/holidayhacker/', // Repository name
   // ... rest of config
 })
 ```
@@ -277,4 +277,4 @@ export default defineConfig({
 
 ---
 
-*This change proposal enhances the completed Long Weekend Optimizer by adding deployment infrastructure while maintaining all existing functionality and project momentum.*
+*This change proposal enhances the completed HolidayHacker by adding deployment infrastructure while maintaining all existing functionality and project momentum.*

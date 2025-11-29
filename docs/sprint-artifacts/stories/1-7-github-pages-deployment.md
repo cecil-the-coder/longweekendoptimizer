@@ -5,7 +5,7 @@ Status: review
 ## Story
 
 As a project maintainer,
-I want the Long Weekend Optimizer automatically deployed to GitHub Pages,
+I want the HolidayHacker automatically deployed to GitHub Pages,
 so that users can access the application publicly and I can demo the working product.
 
 ## Acceptance Criteria
@@ -55,7 +55,7 @@ so that users can access the application publicly and I can demo the working pro
 
 ### Requirements Context Summary
 
-Based on Sprint Change Proposal approval, Story 1.7 focuses on implementing automated GitHub Pages deployment pipeline for the completed Long Weekend Optimizer application. This completes the development lifecycle by adding deployment automation without disrupting existing functionality.
+Based on Sprint Change Proposal approval, Story 1.7 focuses on implementing automated GitHub Pages deployment pipeline for the completed HolidayHacker application. This completes the development lifecycle by adding deployment automation without disrupting existing functionality.
 
 **Key Requirements from Sprint Change Proposal:**
 - Automated deployment via GitHub Actions workflow on main branch commits [Source: docs/sprint-change-proposal-2025-11-27.md]
@@ -174,7 +174,7 @@ Claude Sonnet 4.5 (model ID: 'claude-sonnet-4-5-20250929')
 ### Completion Notes List
 
 ✅ **GitHub Actions Workflow Created**: Complete deployment pipeline with build and deploy stages, proper permissions, and error handling
-✅ **Vite Configuration Updated**: Base path configured for GitHub Pages (/longweekendoptimizer/), optimized build settings with hashed filenames
+✅ **Vite Configuration Updated**: Base path configured for GitHub Pages (/holidayhacker/), optimized build settings with hashed filenames
 ✅ **SPA Routing Setup**: 404.html created for proper client-side routing in production
 ✅ **Build Process Validated**: Working npm run build generates optimized dist folder with correct asset paths
 ✅ **Documentation Complete**: Comprehensive deployment guide created with troubleshooting and setup instructions
@@ -278,7 +278,7 @@ Story 1.7 successfully implements a comprehensive GitHub Pages deployment pipeli
 | AC# | Description | Status | Evidence |
 |-----|-------------|--------|----------|
 | AC1 | GitHub Actions workflow automatically builds and deploys on main branch push | ✅ IMPLEMENTED | `.github/workflows/deploy.yml` with proper triggers, build stage, deployment, and error handling |
-| AC2 | Application successfully serves from GitHub Pages URL | ✅ IMPLEMENTED | Vite base path configured (`/longweekendoptimizer/`), workflow deploys to GitHub Pages |
+| AC2 | Application successfully serves from GitHub Pages URL | ✅ IMPLEMENTED | Vite base path configured (`/holidayhacker/`), workflow deploys to GitHub Pages |
 | AC3 | All static assets load correctly in production environment | ✅ IMPLEMENTED | Build generates hashed assets (`index-BVfOQtE1.js`, `index-ahbeGFXv.css`), proper asset paths configured |
 | AC4 | Deployment process includes proper build optimization and error handling | ✅ IMPLEMENTED | Production build optimization, minification, GitHub Actions success/failure reporting |
 | AC5 | Local storage functionality works in deployed environment | ✅ IMPLEMENTED | localStorageService with HTTPS security handling, feature detection, error recovery |

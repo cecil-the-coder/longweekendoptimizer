@@ -1,6 +1,6 @@
 # Test Infrastructure
 
-This directory contains the test suite for the Long Weekend Optimizer application.
+This directory contains the test suite for the HolidayHacker application.
 
 ## Test Strategy
 

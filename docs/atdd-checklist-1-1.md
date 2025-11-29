@@ -191,7 +191,7 @@ No external services need mocking for this project setup story.
 
 ```tsx
 <div data-testid="welcome-message">
-  Welcome to Long Weekend Optimizer
+  Welcome to HolidayHacker
 </div>
 <button data-testid="count-button" onClick={incrementCount}>
   count is {count}
@@ -229,7 +229,7 @@ No external services need mocking for this project setup story.
 
 - [ ] Create src/components/HelloWorld.tsx React functional component
 - [ ] Implement default greeting rendering ("Hello, World!")
-- [ ] Implement welcome message rendering ("Welcome to Long Weekend Optimizer")
+- [ ] Implement welcome message rendering ("Welcome to HolidayHacker")
 - [ ] Add data-testid="welcome-message" to welcome element
 - [ ] Create src/App.tsx that imports and renders HelloWorld
 - [ ] Create src/main.tsx that renders App to DOM
@@ -355,7 +355,7 @@ No external services need mocking for this project setup story.
 - [ ] Implement TypeScript props interface: `interface HelloWorldProps { name?: string; }`
 - [ ] Implement component with default name = "World"
 - [ ] Implement greeting display: `"Hello, ${name}!"`
-- [ ] Implement welcome message: "Welcome to Long Weekend Optimizer"
+- [ ] Implement welcome message: "Welcome to HolidayHacker"
 - [ ] Implement count state with useState(0)
 - [ ] Implement count button with onClick handler
 - [ ] Add all required data-testid attributes

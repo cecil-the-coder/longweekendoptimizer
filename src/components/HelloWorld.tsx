@@ -10,7 +10,7 @@ function HelloWorld({ name = 'World' }: HelloWorldProps) {
   return (
     <div>
       <h1>Hello, {name}!</h1>
-      <p>Welcome to Long Weekend Optimizer</p>
+      <p>Welcome to HolidayHacker</p>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           Count is {count}

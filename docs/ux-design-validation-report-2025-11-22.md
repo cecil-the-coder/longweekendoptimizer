@@ -1,6 +1,6 @@
 # UX Design Specification Validation Report
 
-**Document:** `/home/micknugget/Documents/code/bmadautomate/longweekendoptimizer/docs/ux-design-specification.md`
+**Document:** `/home/micknugget/Documents/code/bmadautomate/holidayhacker/docs/ux-design-specification.md`
 **Checklist:** `.bmad/bmm/workflows/2-plan-workflows/create-ux-design/checklist.md`
 **Date:** 2025-11-22
 **Validator:** Sally (UX Designer Agent)
@@ -562,7 +562,7 @@ Evidence: Lines 1386-1393 - "This UX specification provides everything needed to
 ✅ **Component specifications present** - 13 components fully specified
 ✅ **Responsive strategy present** - 3 breakpoints with adaptation patterns
 ✅ **Accessibility addressed** - WCAG AA target with complete requirements
-✅ **Project-specific content** - All decisions tied to Long Weekend Optimizer context
+✅ **Project-specific content** - All decisions tied to HolidayHacker context
 
 **No critical failures detected!**
 
@@ -819,7 +819,7 @@ This UX Design Specification represents **exceptional collaborative design work*
 - Documented comprehensive rationale for all choices
 - Produced implementation-ready specifications
 
-**The Long Weekend Optimizer is ready to be built.** Developers have clear guidance on:
+**The HolidayHacker is ready to be built.** Developers have clear guidance on:
 - What to build (13 components, 3 user journeys)
 - How it should look (colors, typography, spacing, design direction)
 - How it should behave (UX patterns, interactions, feedback)

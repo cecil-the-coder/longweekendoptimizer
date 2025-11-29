@@ -50,7 +50,7 @@ describe('localStorageService', () => {
 
       const result = loadHolidays();
 
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('long-weekend-optimizer-holidays');
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('holidayhacker-holidays');
       expect(result).toEqual({
         holidays: [],
         error: null,
@@ -67,7 +67,7 @@ describe('localStorageService', () => {
 
       const result = loadHolidays();
 
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('long-weekend-optimizer-holidays');
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('holidayhacker-holidays');
       expect(result).toEqual({
         holidays: storedHolidays,
         error: null,
@@ -162,7 +162,7 @@ describe('localStorageService', () => {
       const result = saveHolidays(holidaysToSave);
 
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         JSON.stringify(holidaysToSave)
       );
       expect(result).toBeNull();
@@ -172,7 +172,7 @@ describe('localStorageService', () => {
       const result = saveHolidays([]);
 
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         '[]'
       );
       expect(result).toBeNull();
@@ -333,10 +333,10 @@ describe('localStorageService', () => {
       loadHolidays();
 
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         expect.any(String)
       );
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('long-weekend-optimizer-holidays');
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('holidayhacker-holidays');
     });
   });
 

@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Playwright Configuration for Long Weekend Optimizer
+ * Playwright Configuration for HolidayHacker
  *
  * Cross-browser testing: Chromium, Firefox, WebKit (Safari)
  * Mobile testing: Pixel 5 (Android), iPhone 13 (iOS)
@@ -33,7 +33,7 @@ export default defineConfig({
   /* Shared settings for all the projects below */
   use: {
     /* Base URL for page.goto('/') */
-    baseURL: 'https://cecil-the-coder.github.io/longweekendoptimizer', // Deployed GitHub Pages site
+    baseURL: 'https://holidayhacker.app', // Deployed GitHub Pages site
 
     /* Collect trace when retrying the failed test */
     trace: 'on-first-retry',

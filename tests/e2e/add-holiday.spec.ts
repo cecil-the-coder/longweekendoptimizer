@@ -19,7 +19,7 @@ test.describe('Add Holiday', () => {
   });
 
   test('should add a holiday and display it in the list', async ({ page }) => {
-    await page.goto('https://cecil-the-coder.github.io/longweekendoptimizer/');
+    await page.goto('https://holidayhacker.app/');
 
     // Verify form is visible using correct selector
     await expect(page.locator('form')).toBeVisible();
@@ -39,7 +39,7 @@ test.describe('Add Holiday', () => {
   });
 
   test('should add multiple holidays', async ({ page }) => {
-    await page.goto('https://cecil-the-coder.github.io/longweekendoptimizer/');
+    await page.goto('https://holidayhacker.app/');
 
     // Add first holiday
     await page.fill('input#holiday-name', 'Thanksgiving');
@@ -59,7 +59,7 @@ test.describe('Add Holiday', () => {
   });
 
   test('should clear form after adding holiday', async ({ page }) => {
-    await page.goto('https://cecil-the-coder.github.io/longweekendoptimizer/');
+    await page.goto('https://holidayhacker.app/');
 
     // Fill and submit
     await page.fill('input#holiday-name', 'New Year');
@@ -78,7 +78,7 @@ test.describe('Add Holiday', () => {
     // Set mobile viewport (FR10: Responsive web)
     await page.setViewportSize({ width: 375, height: 667 }); // iPhone SE size
 
-    await page.goto('https://cecil-the-coder.github.io/longweekendoptimizer/');
+    await page.goto('https://holidayhacker.app/');
 
     // Form should still be visible and usable on mobile
     await expect(page.locator('form')).toBeVisible();

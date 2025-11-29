@@ -1,6 +1,6 @@
-# Long Weekend Optimizer
+# HolidayHacker
 
-A React TypeScript application that helps users plan long weekends by managing company holidays and finding optimal break opportunities.
+A React TypeScript application that helps you hack your calendar to maximize time off by managing company holidays and finding optimal vacation opportunities.
 
 ## Features
 
@@ -86,7 +86,7 @@ A React TypeScript application that helps users plan long weekends by managing c
 - **Comprehensive Error Handling**: User-friendly error messages for all failure scenarios
 - **Automatic Loading**: Loads saved holiday list on application startup
 - **Success Feedback**: User confirmation when operations succeed
-- **Storage Key**: `long-weekend-optimizer-holidays`
+- **Storage Key**: `holidayhacker-holidays`
 
 ### 📱 Responsive Design
 - Mobile-friendly interface with proper touch targets
@@ -526,7 +526,7 @@ The application is configured for automatic deployment to GitHub Pages via GitHu
 
 2. **Automatic Deployment**:
    - Push to `main` branch triggers automatic build and deployment
-   - Application will be available at `https://[username].github.io/longweekendoptimizer/`
+   - Application will be available at `https://holidayhacker.app/`
 
 3. **Test Deployment**:
    ```bash
@@ -542,7 +542,7 @@ The application is configured for automatic deployment to GitHub Pages via GitHu
 
 Once deployed, the application is accessible at:
 ```
-https://[username].github.io/longweekendoptimizer/
+https://holidayhacker.app/
 ```
 
 **Features in Production:**

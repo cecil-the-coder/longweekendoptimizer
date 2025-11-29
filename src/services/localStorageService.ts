@@ -4,7 +4,7 @@
 
 import { Holiday } from '../context/HolidayContext';
 
-const HOLIDAYS_STORAGE_KEY = 'long-weekend-optimizer-holidays';
+const HOLIDAYS_STORAGE_KEY = 'holidayhacker-holidays';
 
 export interface StorageError {
   type: 'QUOTA_EXCEEDED' | 'SECURITY_ERROR' | 'GENERIC_ERROR' | 'CORRUPTION_ERROR';

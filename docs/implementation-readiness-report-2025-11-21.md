@@ -1,7 +1,7 @@
 # Implementation Readiness Assessment Report
 
 **Date:** 2025-11-21
-**Project:** longweekendoptimizer
+**Project:** holidayhacker
 **Assessed By:** BMad
 **Assessment Type:** Phase 3 to Phase 4 Transition Validation
 
@@ -40,7 +40,7 @@
 - Test Design (recommended for quality assurance)
 
 **Project Overview:**
-The Long Weekend Optimizer is a lightweight, client-side web application designed to help users identify opportunities to create 4-day weekends by strategically taking vacation days adjacent to company holidays that fall on Tuesdays or Thursdays. This is a greenfield MVP project with zero backend requirements, targeting static hosting platforms like Vercel or Netlify.
+The HolidayHacker is a lightweight, client-side web application designed to help users identify opportunities to create 4-day weekends by strategically taking vacation days adjacent to company holidays that fall on Tuesdays or Thursdays. This is a greenfield MVP project with zero backend requirements, targeting static hosting platforms like Vercel or Netlify.
 
 ---
 

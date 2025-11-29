@@ -1,6 +1,6 @@
-# Long Weekend Optimizer - Deployment Guide
+# HolidayHacker - Deployment Guide
 
-This guide explains how to deploy the Long Weekend Optimizer application using GitHub Pages.
+This guide explains how to deploy the HolidayHacker application using GitHub Pages.
 
 ## Prerequisites
 
@@ -38,7 +38,7 @@ Once configured, deployment happens automatically when you push to the `main` br
 
 After successful deployment, the app will be available at:
 ```
-https://[username].github.io/longweekendoptimizer/
+https://[username].github.io/holidayhacker/
 ```
 
 ## Manual Testing
@@ -83,7 +83,7 @@ The `vite.config.ts` is configured for GitHub Pages:
 
 ```typescript
 export default defineConfig({
-  base: '/longweekendoptimizer/', // GitHub Pages base path
+  base: '/holidayhacker/', // GitHub Pages base path
   build: {
     outDir: 'dist',
     sourcemap: true,
@@ -118,7 +118,7 @@ The `.github/workflows/deploy.yml` includes:
 
 2. **Asset Loading Errors**
    - Check base path in vite.config.ts
-   - Verify asset URLs include `/longweekendoptimizer/` prefix
+   - Verify asset URLs include `/holidayhacker/` prefix
 
 3. **Build Failures**
    - Check Node.js version (should be 18+)
@@ -140,7 +140,7 @@ The `.github/workflows/deploy.yml` includes:
 2. **Validate Asset Paths**:
    Check that asset URLs in index.html include the base path:
    ```html
-   <script src="/longweekendoptimizer/assets/index-[hash].js"></script>
+   <script src="/holidayhacker/assets/index-[hash].js"></script>
    ```
 
 3. **Check GitHub Actions**:

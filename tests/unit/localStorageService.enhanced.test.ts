@@ -102,7 +102,7 @@ describe('localStorageService - Enhanced Persistence', () => {
     it('should load holidays when localStorage is available', () => {
       // GIVEN: Holidays are stored in localStorage
       const holidays: Holiday[] = [createHoliday({ name: 'Test Holiday' })];
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify(holidays));
+      localStorage.setItem('holidayhacker-holidays', JSON.stringify(holidays));
 
       // WHEN: Loading holidays
       const result = loadHolidays();
@@ -140,7 +140,7 @@ describe('localStorageService - Enhanced Persistence', () => {
   describe('AC5: Corrupted data recovery with user notification', () => {
     it('should detect and recover from corrupted JSON data', () => {
       // GIVEN: LocalStorage contains corrupted JSON
-      localStorage.setItem('long-weekend-optimizer-holidays', 'invalid JSON {]');
+      localStorage.setItem('holidayhacker-holidays', 'invalid JSON {]');
 
       // WHEN: Loading holidays
       const result = loadHolidays();
@@ -160,7 +160,7 @@ describe('localStorageService - Enhanced Persistence', () => {
 
     it('should clear corrupted data and reset to empty state', () => {
       // GIVEN: LocalStorage contains corrupted data
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify({ not: 'an array' }));
+      localStorage.setItem('holidayhacker-holidays', JSON.stringify({ not: 'an array' }));
 
       // WHEN: Loading holidays
       const result = loadHolidays();
@@ -168,7 +168,7 @@ describe('localStorageService - Enhanced Persistence', () => {
       // THEN: Should clear corrupted data and return empty array
       expect(result).toEqual([]);
       // Enhanced version should clear the corrupted data
-      expect(localStorage.getItem('long-weekend-optimizer-holidays')).toBe(JSON.stringify([]));
+      expect(localStorage.getItem('holidayhacker-holidays')).toBe(JSON.stringify([]));
     });
 
     it('should provide user-friendly notification for data recovery', () => {
@@ -182,7 +182,7 @@ describe('localStorageService - Enhanced Persistence', () => {
       ];
 
       corruptionScenarios.forEach((corruptedData, index) => {
-        localStorage.setItem('long-weekend-optimizer-holidays', corruptedData);
+        localStorage.setItem('holidayhacker-holidays', corruptedData);
 
         // WHEN: Loading corrupted data
         const result = loadHolidays();
@@ -190,7 +190,7 @@ describe('localStorageService - Enhanced Persistence', () => {
         // THEN: Should handle gracefully and reset
         expect(result).toEqual([]);
         // Enhanced version should emit user notification
-        expect(localStorage.getItem('long-weekend-optimizer-holidays')).toBe(JSON.stringify([]));
+        expect(localStorage.getItem('holidayhacker-holidays')).toBe(JSON.stringify([]));
       });
     });
   });
@@ -321,7 +321,7 @@ describe('localStorageService - Enhanced Persistence', () => {
       ];
 
       invalidDataTypes.forEach(data => {
-        localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify(data));
+        localStorage.setItem('holidayhacker-holidays', JSON.stringify(data));
 
         // WHEN: Loading invalid data
         const result = loadHolidays();
@@ -347,7 +347,7 @@ describe('localStorageService - Enhanced Persistence', () => {
         { id: 'valid-id', name: 'Valid name', date: 'invalid-date' } // invalid date format
       ];
 
-      localStorage.setItem('long-weekend-optimizer-holidays', JSON.stringify(invalidHolidays));
+      localStorage.setItem('holidayhacker-holidays', JSON.stringify(invalidHolidays));
 
       // WHEN: Loading invalid holiday objects
       const result = loadHolidays();

@@ -1,8 +1,8 @@
-# Long Weekend Optimizer - Architecture Documentation
+# HolidayHacker - Architecture Documentation
 
 ## Overview
 
-The Long Weekend Optimizer is a client-side web application built with React, TypeScript, and Vite. It provides holiday weekend optimization recommendations through a static site architecture perfect for GitHub Pages deployment.
+The HolidayHacker is a client-side web application built with React, TypeScript, and Vite. It provides holiday weekend optimization recommendations through a static site architecture perfect for GitHub Pages deployment.
 
 ## Technology Stack
 

@@ -1,7 +1,7 @@
 /**
  * Date Logic Module - Story 1.4 Implementation
  *
- * Core recommendation engine for Long Weekend Optimizer
+ * Core recommendation engine for HolidayHacker
  *
  * Analyzes holiday dates and recommends optimal days off to create 4-day weekends.
  * Implements O(n) algorithm for processing 50+ holidays in under 10ms.

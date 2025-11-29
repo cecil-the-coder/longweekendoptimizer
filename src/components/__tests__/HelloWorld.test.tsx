@@ -15,7 +15,7 @@ describe('HelloWorld Component', () => {
 
   it('displays welcome message', () => {
     render(<HelloWorld />)
-    expect(screen.getByText('Welcome to Long Weekend Optimizer')).toBeInTheDocument()
+    expect(screen.getByText('Welcome to HolidayHacker')).toBeInTheDocument()
   })
 
   it('renders count button', () => {

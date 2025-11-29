@@ -11,7 +11,7 @@ describe('HelloWorld Component Tests (AC 4)', () => {
     render(<HelloWorld />);
 
     expect(screen.getByText('Hello, World!')).toBeInTheDocument();
-    expect(screen.getByText('Welcome to Long Weekend Optimizer')).toBeInTheDocument();
+    expect(screen.getByText('Welcome to HolidayHacker')).toBeInTheDocument();
   });
 
   test('should render custom name when provided', () => {
@@ -22,7 +22,7 @@ describe('HelloWorld Component Tests (AC 4)', () => {
     render(<HelloWorld name="Long Weekend" />);
 
     expect(screen.getByText('Hello, Long Weekend!')).toBeInTheDocument();
-    expect(screen.getByText('Welcome to Long Weekend Optimizer')).toBeInTheDocument();
+    expect(screen.getByText('Welcome to HolidayHacker')).toBeInTheDocument();
   });
 
   test('should initialize count button with zero', () => {

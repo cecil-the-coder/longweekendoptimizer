@@ -9,7 +9,7 @@ Status: Draft
 
 ## Overview
 
-The Long Weekend Optimizer is a lightweight, client-side web application that helps employees maximize their paid time off by identifying opportunities to create 4-day weekends. The application analyzes user-provided company holidays and recommends strategic single vacation days that bridge Tuesday/Thursday holidays to adjacent weekends.
+The HolidayHacker is a lightweight, client-side web application that helps employees maximize their paid time off by identifying opportunities to create 4-day weekends. The application analyzes user-provided company holidays and recommends strategic single vacation days that bridge Tuesday/Thursday holidays to adjacent weekends.
 
 This epic establishes the complete foundation and core functionality, delivering the full MVP experience from project initialization through displaying actionable long weekend recommendations. The solution is a 100% client-side static application with no backend dependencies, using localStorage for data persistence and browser-native JavaScript Date objects for all date calculations.
 

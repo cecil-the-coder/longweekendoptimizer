@@ -66,7 +66,7 @@ const HolidayList: React.FC = () => {
                 data-testid="clear-all-data-button"
                 onClick={() => {
                   // Clear only our app's localStorage data
-                  localStorage.removeItem('long-weekend-optimizer-holidays');
+                  localStorage.removeItem('holidayhacker-holidays');
                   clearStorageError();
                   window.location.reload();
                 }}

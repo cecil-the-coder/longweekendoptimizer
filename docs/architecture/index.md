@@ -1,8 +1,8 @@
-# Long Weekend Optimizer Frontend Architecture Document
+# HolidayHacker Frontend Architecture Document
 
 ## Table of Contents
 
-- [Long Weekend Optimizer Frontend Architecture Document](#table-of-contents)
+- [HolidayHacker Frontend Architecture Document](#table-of-contents)
   - [Template and Framework Selection](./template-and-framework-selection.md)
   - [Frontend Tech Stack](./frontend-tech-stack.md)
   - [Project Structure](./project-structure.md)

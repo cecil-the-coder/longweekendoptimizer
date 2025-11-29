@@ -159,7 +159,7 @@
       <test-idea ac-id="4" description="Test Hello World component renders and functions correctly">
         <test-case>Component should render default greeting "Hello, World!"</test-case>
         <test-case>Component should accept custom name prop and render greeting</test-case>
-        <test-case>Component should display welcome message for Long Weekend Optimizer</test-case>
+        <test-case>Component should display welcome message for HolidayHacker</test-case>
         <test-case>Count button should increment state when clicked</test-case>
         <test-case>Component should follow functional component pattern with TypeScript</test-case>
       </test-idea>

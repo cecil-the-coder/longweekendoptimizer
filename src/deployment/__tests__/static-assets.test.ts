@@ -131,7 +131,7 @@ describe('AC3: All static assets load correctly in production environment', () =
           (function() {
             'use strict';
             // Minified React application code
-            console.log('Long Weekend Optimizer loaded');
+            console.log('HolidayHacker loaded');
             // ... rest of application ...
           })();
         `)
@@ -147,7 +147,7 @@ describe('AC3: All static assets load correctly in production environment', () =
       expect(response.headers.get('cache-control')).toContain('max-age=31536000');
 
       const js = await response.text();
-      expect(js).toContain('Long Weekend Optimizer');
+      expect(js).toContain('HolidayHacker');
     });
 
     it('should have properly compressed JavaScript bundles', async () => {

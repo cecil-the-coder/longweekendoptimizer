@@ -173,7 +173,7 @@ export class LocalStorageScenarioFixture {
       name: `Corrupted data in localStorage: ${corruptedData}`,
       setup: () => {
         localStorage.clear();
-        localStorage.setItem('long-weekend-optimizer-holidays', corruptedData);
+        localStorage.setItem('holidayhacker-holidays', corruptedData);
         return () => {
           localStorage.clear();
         };
@@ -188,7 +188,7 @@ export class LocalStorageScenarioFixture {
       name: `Corrupted data load + ${saveError} save error`,
       setup: () => {
         // Set up corrupted data
-        localStorage.setItem('long-weekend-optimizer-holidays', corruptedData);
+        localStorage.setItem('holidayhacker-holidays', corruptedData);
 
         // Set up save error
         const originalSetItem = Storage.prototype.setItem;
@@ -219,7 +219,7 @@ export class LocalStorageScenarioFixture {
             date: `2025-${String((i % 12) + 1).padStart(2, '0')}-${String((i % 28) + 1).padStart(2, '0')}`,
           }))
         );
-        localStorage.setItem('long-weekend-optimizer-holidays', largeData);
+        localStorage.setItem('holidayhacker-holidays', largeData);
         return () => {
           localStorage.clear();
         };

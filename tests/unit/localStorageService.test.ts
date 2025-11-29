@@ -64,7 +64,7 @@ describe('localStorageService', () => {
       const result = localStorageModule.saveHolidays(holidays);
 
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         JSON.stringify(holidays)
       );
       expect(result).toBeNull();
@@ -74,7 +74,7 @@ describe('localStorageService', () => {
       const result = localStorageModule.saveHolidays([]);
 
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         '[]'
       );
       expect(result).toBeNull();
@@ -189,7 +189,7 @@ describe('localStorageService', () => {
         error: null,
         hadCorruption: false
       });
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('long-weekend-optimizer-holidays');
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('holidayhacker-holidays');
     });
 
     it('should return empty array structure when no data stored', () => {

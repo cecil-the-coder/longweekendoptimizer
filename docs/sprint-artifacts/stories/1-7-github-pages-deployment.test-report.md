@@ -41,7 +41,7 @@ The `.github/workflows/deploy.yml` file demonstrates a mature deployment pipelin
 The `vite.config.ts` is well-optimized for GitHub Pages deployment:
 
 **✅ Strengths Identified:**
-- Correct base path configuration (/longweekendoptimizer/)
+- Correct base path configuration (/holidayhacker/)
 - Production-ready build optimization with minification
 - Proper asset hashing for cache busting
 - Source map generation for debugging

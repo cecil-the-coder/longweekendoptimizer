@@ -1,6 +1,6 @@
 # Error Handling and Resilience
 
-This document defines error handling strategies and resilience patterns for the Long Weekend Optimizer application.
+This document defines error handling strategies and resilience patterns for the HolidayHacker application.
 
 ## Principles
 

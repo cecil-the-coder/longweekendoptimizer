@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Styling Investigation', () => {
   test('capture screenshot of deployed site', async ({ page }) => {
-    const DEPLOYED_URL = 'https://cecil-the-coder.github.io/longweekendoptimizer/';
+    const DEPLOYED_URL = 'https://holidayhacker.app/';
 
     // Navigate to the deployed site
     await page.goto(DEPLOYED_URL);

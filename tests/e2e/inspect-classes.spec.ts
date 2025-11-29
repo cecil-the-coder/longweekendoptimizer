@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 
 test('inspect rendered HTML and classes', async ({ page }) => {
-  await page.goto('https://cecil-the-coder.github.io/longweekendoptimizer/');
+  await page.goto('https://holidayhacker.app/');
   await page.waitForLoadState('networkidle');
 
   // Get the rendered HTML with all classes

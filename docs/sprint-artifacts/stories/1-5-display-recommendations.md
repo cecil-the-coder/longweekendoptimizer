@@ -129,7 +129,7 @@ Claude Sonnet 4.5 (model ID: 'claude-sonnet-4-5-20250929')
 
 **Story 1.5 Implementation Complete**
 
-Successfully implemented the complete recommendation display system that delivers the core value of the Long Weekend Optimizer. The implementation follows all established patterns and technical specifications:
+Successfully implemented the complete recommendation display system that delivers the core value of the HolidayHacker. The implementation follows all established patterns and technical specifications:
 
 **Key Components Created:**
 1. **RecommendationCard** - Individual recommendation display with proper formatting, responsive design, and accessibility
@@ -432,7 +432,7 @@ const sortedRecommendations = [...calculatedRecommendations].sort((a, b) => {
 **IMMEDIATE ACTION:** Approve Story 1.5 for completion and transition to Story 1.6
 
 **Rationale:**
-Story 1.5 now delivers the complete core value proposition of the Long Weekend Optimizer. Users can:
+Story 1.5 now delivers the complete core value proposition of the HolidayHacker. Users can:
 1. View personalized long weekend recommendations clearly
 2. See updates automatically when adding/removing holidays
 3. Experience chronological order for better planning

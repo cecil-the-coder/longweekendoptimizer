@@ -1,4 +1,4 @@
-# Long Weekend Optimizer UX Design Specification
+# HolidayHacker UX Design Specification
 
 _Created on 2025-11-22 by BMad_
 _Generated using BMad Method - Create UX Design Workflow v1.0_
@@ -7,7 +7,7 @@ _Generated using BMad Method - Create UX Design Workflow v1.0_
 
 ## Executive Summary
 
-**Long Weekend Optimizer** is a strategic vacation planning utility designed to help employees maximize their time off with minimal effort. The application analyzes company holiday schedules to identify opportunities for creating 4-day weekends by strategically taking a single vacation day.
+**HolidayHacker** is a strategic vacation planning utility designed to help employees maximize their time off with minimal effort. The application analyzes company holiday schedules to identify opportunities for creating 4-day weekends by strategically taking a single vacation day.
 
 **Target Users:** Busy employees who want to optimize their paid time off strategically and efficiently
 
@@ -107,7 +107,7 @@ _Generated using BMad Method - Create UX Design Workflow v1.0_
 
 **No Novel Patterns Required**
 
-The Long Weekend Optimizer uses well-established UX patterns:
+The HolidayHacker uses well-established UX patterns:
 - **Date input:** Standard calendar picker (like travel booking)
 - **List management:** Add/remove items (like todo lists)
 - **Strategic insights display:** Cards with recommendations (like Google Flights suggestions)
@@ -1278,7 +1278,7 @@ These patterns ensure:
 
 **Responsive & Accessibility Summary:**
 
-The Long Weekend Optimizer is designed **mobile-first** with a **single-column layout** that scales gracefully to desktop. **WCAG AA accessibility** is baked into every decision:
+The HolidayHacker is designed **mobile-first** with a **single-column layout** that scales gracefully to desktop. **WCAG AA accessibility** is baked into every decision:
 - High-contrast Strategic Blue color scheme
 - Large touch targets
 - Complete keyboard access
@@ -1293,7 +1293,7 @@ The simplicity of the single-page, single-column design actually enhances access
 
 ### 9.1 Completion Summary
 
-🎉 **Excellent work! Your UX Design Specification for Long Weekend Optimizer is complete.**
+🎉 **Excellent work! Your UX Design Specification for HolidayHacker is complete.**
 
 ---
 
@@ -1350,15 +1350,15 @@ The simplicity of the single-page, single-column design actually enhances access
 
 ### **Your Deliverables:**
 
-📄 **UX Design Document:** `/home/micknugget/Documents/code/bmadautomate/longweekendoptimizer/docs/ux-design-specification.md`
+📄 **UX Design Document:** `/home/micknugget/Documents/code/bmadautomate/holidayhacker/docs/ux-design-specification.md`
 - Complete specification with all design decisions and rationale
 - Ready for developer handoff
 
-🎨 **Interactive Color Themes:** `/home/micknugget/Documents/code/bmadautomate/longweekendoptimizer/docs/ux-color-themes.html`
+🎨 **Interactive Color Themes:** `/home/micknugget/Documents/code/bmadautomate/holidayhacker/docs/ux-color-themes.html`
 - 4 complete color theme options with live component examples
 - Strategic Blue (chosen), Modern Teal, Professional Purple, Energetic Orange
 
-🖼️ **Design Direction Mockups:** `/home/micknugget/Documents/code/bmadautomate/longweekendoptimizer/docs/ux-design-directions.html`
+🖼️ **Design Direction Mockups:** `/home/micknugget/Documents/code/bmadautomate/holidayhacker/docs/ux-design-directions.html`
 - 6 interactive full-page mockups showing different UX approaches
 - Vertical Stack (chosen), Card Dashboard, Sidebar Layout, Minimal Clean, Dense Info, Spacious Explorer
 
@@ -1507,7 +1507,7 @@ The UX Design workflow (`create-design`) has been completed successfully. This w
 
 🎨 **You've made thoughtful design decisions through visual collaboration that will create an exceptional user experience!**
 
-The Long Weekend Optimizer is ready for design refinement and implementation. All your UX choices are documented with clear rationale, giving developers the context they need to build confidently and maintain design intent throughout development.
+The HolidayHacker is ready for design refinement and implementation. All your UX choices are documented with clear rationale, giving developers the context they need to build confidently and maintain design intent throughout development.
 
 **Pro tip:** Open `ux-color-themes.html` and `ux-design-directions.html` in your browser to see your design come to life! 🚀
 

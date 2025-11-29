@@ -133,7 +133,7 @@ test('Vitest should work', () => {
 // ✅ CORRECT: Test what users experience
 test('should show welcome message', () => {
   render(<HelloWorld />);
-  expect(screen.getByText('Welcome to Long Weekend Optimizer')).toBeInTheDocument();
+  expect(screen.getByText('Welcome to HolidayHacker')).toBeInTheDocument();
 });
 ```
 

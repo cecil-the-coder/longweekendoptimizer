@@ -24,7 +24,7 @@ describe('AC2: Application successfully serves from GitHub Pages URL', () => {
     const mockResponse = {
       ok: true,
       status: 200,
-      text: () => Promise.resolve('<!DOCTYPE html><html><head><title>Long Weekend Optimizer</title></head><body><div id="root"></div></body></html>'),
+      text: () => Promise.resolve('<!DOCTYPE html><html><head><title>HolidayHacker</title></head><body><div id="root"></div></body></html>'),
       headers: new Map([['content-type', 'text/html']])
     };
 
@@ -37,7 +37,7 @@ describe('AC2: Application successfully serves from GitHub Pages URL', () => {
 
     const html = await response.text();
     expect(html).toContain('<!DOCTYPE html>');
-    expect(html).toContain('Long Weekend Optimizer');
+    expect(html).toContain('HolidayHacker');
     expect(html).toContain('<div id="root"></div>');
   });
 
@@ -51,7 +51,7 @@ describe('AC2: Application successfully serves from GitHub Pages URL', () => {
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Long Weekend Optimizer</title>
+            <title>HolidayHacker</title>
             <meta name="description" content="Plan your perfect long weekends with intelligent recommendations">
           </head>
           <body>
@@ -68,7 +68,7 @@ describe('AC2: Application successfully serves from GitHub Pages URL', () => {
 
     expect(html).toContain('<meta charset="UTF-8">');
     expect(html).toContain('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
-    expect(html).toContain('<title>Long Weekend Optimizer</title>');
+    expect(html).toContain('<title>HolidayHacker</title>');
     expect(html).toContain('Plan your perfect long weekends');
   });
 

@@ -304,12 +304,12 @@ describe('localStorageService Advanced Edge Cases', () => {
       loadHolidays();
 
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         expect.any(String)
       );
 
       expect(mockLocalStorage.getItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays'
+        'holidayhacker-holidays'
       );
     });
 
@@ -321,7 +321,7 @@ describe('localStorageService Advanced Edge Cases', () => {
 
       expect(() => saveHolidays(holidays)).not.toThrow();
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'long-weekend-optimizer-holidays',
+        'holidayhacker-holidays',
         expect.any(String)
       );
     });

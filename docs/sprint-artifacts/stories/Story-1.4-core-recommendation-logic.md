@@ -37,7 +37,7 @@ so that I can process the holiday list and identify all long-weekend opportuniti
 
 ### Requirements Context Summary
 
-Based on technical specification and epic requirements, Story 1.4 focuses on creating the core business logic that powers the Long Weekend Optimizer's value proposition. The recommendation engine analyzes user-provided holidays and identifies optimal vacation days to create 4-day weekends.
+Based on technical specification and epic requirements, Story 1.4 focuses on creating the core business logic that powers the HolidayHacker's value proposition. The recommendation engine analyzes user-provided holidays and identifies optimal vacation days to create 4-day weekends.
 
 **Key Requirements from Sources:**
 - Pure function `calculateRecommendations(holidays: Holiday[]): Recommendation[]` [Source: docs/sprint-artifacts/tech-spec-epic-1.md#Data Models and Contracts]
