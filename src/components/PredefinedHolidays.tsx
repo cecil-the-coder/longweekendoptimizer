@@ -17,7 +17,7 @@ const COUNTRY_INFO: Record<string, { flag: string; name: string }> = {
 
 const PredefinedHolidays: React.FC = () => {
   const { addHoliday, holidays } = useHolidays();
-  const [selectedCountries, setSelectedCountries] = useState<Set<string>>(new Set(['USA']));
+  const [selectedCountries, setSelectedCountries] = useState<Set<string>>(new Set(['USA', 'International']));
   const [dateMode, setDateMode] = useState<'thisYear' | 'next365Days'>('next365Days');
   const currentYear = new Date().getFullYear();
   const holidaysByCountry = getUpcomingHolidaysByCountry(dateMode);
