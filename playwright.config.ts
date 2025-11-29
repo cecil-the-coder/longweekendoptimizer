@@ -33,7 +33,7 @@ export default defineConfig({
   /* Shared settings for all the projects below */
   use: {
     /* Base URL for page.goto('/') */
-    baseURL: 'http://localhost:5173', // Vite dev server default port
+    baseURL: 'https://cecil-the-coder.github.io/longweekendoptimizer', // Deployed GitHub Pages site
 
     /* Collect trace when retrying the failed test */
     trace: 'on-first-retry',
@@ -74,12 +74,6 @@ export default defineConfig({
     },
   ],
 
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  // Run tests against deployed GitHub Pages site, no local server needed
+  // webServer disabled for production site testing
 });
