@@ -197,25 +197,6 @@ const HolidayList: React.FC = () => {
           <p className="text-gray-600 mt-2 mb-6">
             Start by adding your first holiday to discover long weekend opportunities!
           </p>
-          <p className="text-sm text-gray-500 mb-6">
-            Enter the holiday name and date in the form above to get started.
-          </p>
-
-          {/* Call to action button */}
-          <button
-            data-testid="add-first-holiday-button"
-            onClick={() => {
-              // Scroll to and focus the holiday name input
-              const input = document.getElementById('holiday-name') as HTMLInputElement;
-              if (input) {
-                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                input.focus();
-              }
-            }}
-            className="w-full bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium text-lg"
-          >
-            Add Your First Holiday
-          </button>
 
           {/* Helpful guidance */}
           <div className="mt-8 text-left">
