@@ -68,14 +68,32 @@ const AddHolidaysPanel: React.FC<AddHolidaysPanelProps> = ({ isOpen, onClose }) 
 
         {/* Content */}
         <div className="px-6 py-8 space-y-8">
+          {/* Manual Entry - Collapsible */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 px-4">Quick Add</h3>
-            <PredefinedHolidays />
+            <details className="group" open>
+              <summary className="cursor-pointer list-none mb-4">
+                <div className="flex items-center justify-between px-4 py-2 bg-white rounded-lg hover:bg-gray-50 transition-colors">
+                  <h3 className="text-lg font-semibold text-gray-900">Manual Entry</h3>
+                  <svg
+                    className="w-5 h-5 text-gray-600 transition-transform group-open:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </summary>
+              <div className="mt-4">
+                <HolidayForm />
+              </div>
+            </details>
           </div>
 
+          {/* Quick Add - Always visible */}
           <div className="border-t border-gray-300 pt-8">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 px-4">Manual Entry</h3>
-            <HolidayForm />
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 px-4">Quick Add</h3>
+            <PredefinedHolidays />
           </div>
         </div>
 
