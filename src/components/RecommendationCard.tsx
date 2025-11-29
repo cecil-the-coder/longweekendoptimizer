@@ -27,33 +27,46 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({ recommendation 
   }
 
   // Format holiday date for readable display (e.g., "Thursday, Nov 27, 2025")
+  // Uses local timezone to avoid off-by-one errors
   const formatDate = (dateString: string): string => {
     if (!dateString) return 'Invalid Date';
 
-    const date = new Date(dateString);
+    const [year, month, day] = dateString.split('-').map(Number);
+    if (!year || !month || !day) return 'Invalid Date';
+
+    const date = new Date(year, month - 1, day);
     if (isNaN(date.getTime())) return 'Invalid Date';
 
     const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
-    const month = date.toLocaleDateString('en-US', { month: 'short' });
-    const day = date.getDate();
-    const year = date.getFullYear();
+    const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+    const dayNum = date.getDate();
+    const yearNum = date.getFullYear();
 
-    return `${dayOfWeek}, ${month} ${day}, ${year}`;
+    return `${dayOfWeek}, ${monthName} ${dayNum}, ${yearNum}`;
   };
 
   // Format recommended date for readable display (e.g., "Friday, Nov 28, 2025")
+  // Uses local timezone to avoid off-by-one errors
   const formatRecommendedDate = (dateString: string): string => {
     if (!dateString) return 'Invalid Date';
 
-    const date = new Date(dateString);
+    // Handle multiple dates (for grouped recommendations)
+    if (dateString.includes(',')) {
+      return dateString;
+    }
+
+    const [year, month, day] = dateString.split('-').map(Number);
+    if (!year || !month || !day) return 'Invalid Date';
+
+    const date = new Date(year, month - 1, day);
     if (isNaN(date.getTime())) return 'Invalid Date';
 
     const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
-    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const monthName = date.toLocaleDateString('en-US', { month: 'short' });
     const dayNum = date.getDate();
-    const year = date.getFullYear();
+    const yearNum = date.getFullYear();
 
-    return `${dayOfWeek}, ${month} ${dayNum}, ${year}`;
+    return `${dayOfWeek}, ${monthName} ${dayNum}, ${yearNum}`;
   };
 
   // Safely extract recommendation properties with defaults
