@@ -207,13 +207,33 @@ const findHolidayClusters = (holidays: Holiday[], holidayDateSet: Set<string>): 
         currentDay = new Date(...currentDate.split('-').map(Number).map((n, i) => i === 1 ? n - 1 : n) as [number, number, number]).getDay();
       }
 
-      // Calculate total vacation days for each option
+      // Calculate total vacation days including adjacent weekends
       const calculateVacationDays = (beforeDates: string[], afterDates: string[]): number => {
         if (beforeDates.length === 0 && afterDates.length === 0) return 0;
 
         const allDates = [...beforeDates, holiday1.date, holiday2.date, ...afterDates];
-        const [y1, m1, d1] = allDates[0].split('-').map(Number);
-        const [y2, m2, d2] = allDates[allDates.length - 1].split('-').map(Number);
+        const startDate = allDates[0];
+        let endDate = allDates[allDates.length - 1];
+
+        // Extend to include adjacent weekend if the vacation ends on a Friday
+        const [yEnd, mEnd, dEnd] = endDate.split('-').map(Number);
+        const endDay = new Date(yEnd, mEnd - 1, dEnd).getDay();
+        if (endDay === 5) { // Friday
+          // Include Saturday and Sunday
+          endDate = addDays(endDate, 2); // Move to Sunday
+        }
+
+        // Extend to include adjacent weekend if the vacation starts on a Monday
+        let actualStartDate = startDate;
+        const [yStart, mStart, dStart] = startDate.split('-').map(Number);
+        const startDay = new Date(yStart, mStart - 1, dStart).getDay();
+        if (startDay === 1) { // Monday
+          // Include Saturday and Sunday before
+          actualStartDate = addDays(startDate, -2); // Move to Saturday
+        }
+
+        const [y1, m1, d1] = actualStartDate.split('-').map(Number);
+        const [y2, m2, d2] = endDate.split('-').map(Number);
 
         return Math.ceil((new Date(y2, m2-1, d2).getTime() - new Date(y1, m1-1, d1).getTime()) / (1000 * 60 * 60 * 24)) + 1;
       };
@@ -243,14 +263,14 @@ const findHolidayClusters = (holidays: Holiday[], holidayDateSet: Set<string>): 
         });
       }
 
-      // Sort by best value: maximize total days, minimize PTO needed
+      // Sort by best value: prioritize total vacation days, then minimize PTO needed
       extensionOptions.sort((a, b) => {
-        const aRatio = a.totalDays / a.ptoNeeded;
-        const bRatio = b.totalDays / b.ptoNeeded;
-        if (Math.abs(aRatio - bRatio) < 0.1) {
-          return b.totalDays - a.totalDays; // If ratios similar, prefer more total days
+        // Primary: More total vacation days is always better
+        if (a.totalDays !== b.totalDays) {
+          return b.totalDays - a.totalDays;
         }
-        return bRatio - aRatio; // Otherwise prefer better ratio
+        // Secondary: If same total days, prefer fewer PTO days
+        return a.ptoNeeded - b.ptoNeeded;
       });
 
       // Only recommend the best option (highest value)
