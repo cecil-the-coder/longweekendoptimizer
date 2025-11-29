@@ -173,74 +173,109 @@ const findHolidayClusters = (holidays: Holiday[], holidayDateSet: Set<string>): 
       const day1Num = new Date(y1, m1 - 1, d1).getDay();
       const day2Num = new Date(y2, m2 - 1, d2).getDay();
 
-      // For Wed+Thu (like NYE+NYD): Recommend Friday after for 6 days, or Tue+Fri for 7 days
-      if (day1Num === 3 && day2Num === 4) { // Wednesday + Thursday
-        const fridayAfter = addDays(holiday2.date, 1);
-        const tuesdayBefore = addDays(holiday1.date, -1);
+      // Calculate extension options: extend before and/or after the holiday pair
+      // Extend until we hit a weekend or an existing holiday
+      const extensionOptions: { dates: string[], ptoNeeded: number, totalDays: number }[] = [];
 
-        // Option 1: Take Friday after (6-day weekend)
-        if (!holidayDateSet.has(fridayAfter)) {
-          recommendations.push({
-            holidayName: `${holiday1.name} + ${holiday2.name}`,
-            holidayDate: holiday1.date,
-            holidayDayOfWeek: day1,
-            recommendedDate: fridayAfter,
-            recommendedDay: getDayOfWeek(fridayAfter),
-            explanation: '→ 6-day vacation (Wed-Thu-Fri-Sat-Sun-Mon)',
-            isGrouped: true,
-            groupedHolidays: [holiday1.name, holiday2.name],
-            daysToTakeOff: 1
-          });
-        }
+      // Option 1: Extend forward (after holiday2) to next weekend
+      let extendAfter: string[] = [];
+      let currentDate = addDays(holiday2.date, 1);
+      let currentDay = new Date(...currentDate.split('-').map(Number).map((n, i) => i === 1 ? n - 1 : n) as [number, number, number]).getDay();
 
-        // Option 2: Take Tuesday before + Friday after (7-day vacation)
-        if (!holidayDateSet.has(tuesdayBefore) && !holidayDateSet.has(fridayAfter)) {
-          recommendations.push({
-            holidayName: `${holiday1.name} + ${holiday2.name}`,
-            holidayDate: holiday1.date,
-            holidayDayOfWeek: day1,
-            recommendedDate: `${tuesdayBefore}, ${fridayAfter}`,
-            recommendedDay: '2 days',
-            explanation: '→ 7-day vacation (Tue-Wed-Thu-Fri-Sat-Sun-Mon)',
-            isGrouped: true,
-            groupedHolidays: [holiday1.name, holiday2.name],
-            daysToTakeOff: 2
-          });
+      while (currentDay !== 0 && currentDay !== 6 && extendAfter.length < 5) { // Stop at weekend or max 5 days
+        if (!holidayDateSet.has(currentDate)) {
+          extendAfter.push(currentDate);
+        } else {
+          break; // Stop if we hit another holiday
         }
+        currentDate = addDays(currentDate, 1);
+        currentDay = new Date(...currentDate.split('-').map(Number).map((n, i) => i === 1 ? n - 1 : n) as [number, number, number]).getDay();
       }
-      // For Thu+Fri: Recommend Monday after to get Thu-Fri-Sat-Sun-Mon-Tue (6 days)
-      else if (day1Num === 4 && day2Num === 5) { // Thursday + Friday
-        const mondayAfter = addDays(holiday2.date, 3);
-        if (!holidayDateSet.has(mondayAfter)) {
-          recommendations.push({
-            holidayName: `${holiday1.name} + ${holiday2.name}`,
-            holidayDate: holiday1.date,
-            holidayDayOfWeek: day1,
-            recommendedDate: mondayAfter,
-            recommendedDay: getDayOfWeek(mondayAfter),
-            explanation: '→ 6-day vacation (Thu-Fri-Sat-Sun-Mon-Tue)',
-            isGrouped: true,
-            groupedHolidays: [holiday1.name, holiday2.name],
-            daysToTakeOff: 1
-          });
+
+      // Option 2: Extend backward (before holiday1) to previous weekend
+      let extendBefore: string[] = [];
+      currentDate = addDays(holiday1.date, -1);
+      currentDay = new Date(...currentDate.split('-').map(Number).map((n, i) => i === 1 ? n - 1 : n) as [number, number, number]).getDay();
+
+      while (currentDay !== 0 && currentDay !== 6 && extendBefore.length < 5) { // Stop at weekend or max 5 days
+        if (!holidayDateSet.has(currentDate)) {
+          extendBefore.unshift(currentDate); // Add to front to maintain order
+        } else {
+          break; // Stop if we hit another holiday
         }
+        currentDate = addDays(currentDate, -1);
+        currentDay = new Date(...currentDate.split('-').map(Number).map((n, i) => i === 1 ? n - 1 : n) as [number, number, number]).getDay();
       }
-      // For Mon+Tue: Recommend Friday before to get Fri-Sat-Sun-Mon-Tue-Wed (6 days)
-      else if (day1Num === 1 && day2Num === 2) { // Monday + Tuesday
-        const fridayBefore = addDays(holiday1.date, -3);
-        if (!holidayDateSet.has(fridayBefore)) {
-          recommendations.push({
-            holidayName: `${holiday1.name} + ${holiday2.name}`,
-            holidayDate: holiday1.date,
-            holidayDayOfWeek: day1,
-            recommendedDate: fridayBefore,
-            recommendedDay: getDayOfWeek(fridayBefore),
-            explanation: '→ 6-day vacation (Fri-Sat-Sun-Mon-Tue-Wed)',
-            isGrouped: true,
-            groupedHolidays: [holiday1.name, holiday2.name],
-            daysToTakeOff: 1
-          });
+
+      // Calculate total vacation days for each option
+      const calculateVacationDays = (beforeDates: string[], afterDates: string[]): number => {
+        if (beforeDates.length === 0 && afterDates.length === 0) return 0;
+
+        const allDates = [...beforeDates, holiday1.date, holiday2.date, ...afterDates];
+        const [y1, m1, d1] = allDates[0].split('-').map(Number);
+        const [y2, m2, d2] = allDates[allDates.length - 1].split('-').map(Number);
+
+        return Math.ceil((new Date(y2, m2-1, d2).getTime() - new Date(y1, m1-1, d1).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      };
+
+      // Add all viable options (only if they require PTO and create a meaningful vacation)
+      if (extendAfter.length > 0) {
+        extensionOptions.push({
+          dates: extendAfter,
+          ptoNeeded: extendAfter.length,
+          totalDays: calculateVacationDays([], extendAfter)
+        });
+      }
+
+      if (extendBefore.length > 0) {
+        extensionOptions.push({
+          dates: extendBefore,
+          ptoNeeded: extendBefore.length,
+          totalDays: calculateVacationDays(extendBefore, [])
+        });
+      }
+
+      if (extendBefore.length > 0 && extendAfter.length > 0) {
+        extensionOptions.push({
+          dates: [...extendBefore, ...extendAfter],
+          ptoNeeded: extendBefore.length + extendAfter.length,
+          totalDays: calculateVacationDays(extendBefore, extendAfter)
+        });
+      }
+
+      // Sort by best value: maximize total days, minimize PTO needed
+      extensionOptions.sort((a, b) => {
+        const aRatio = a.totalDays / a.ptoNeeded;
+        const bRatio = b.totalDays / b.ptoNeeded;
+        if (Math.abs(aRatio - bRatio) < 0.1) {
+          return b.totalDays - a.totalDays; // If ratios similar, prefer more total days
         }
+        return bRatio - aRatio; // Otherwise prefer better ratio
+      });
+
+      // Only recommend the best option (highest value)
+      if (extensionOptions.length > 0) {
+        const bestOption = extensionOptions[0];
+        const startDate = bestOption.dates[0] < holiday1.date ? bestOption.dates[0] : holiday1.date;
+        const endDate = bestOption.dates[bestOption.dates.length - 1] > holiday2.date ? bestOption.dates[bestOption.dates.length - 1] : holiday2.date;
+
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const getDayAbbr = (dateStr: string) => {
+          const [y, m, d] = dateStr.split('-').map(Number);
+          return dayNames[new Date(y, m - 1, d).getDay()];
+        };
+
+        recommendations.push({
+          holidayName: `${holiday1.name} + ${holiday2.name}`,
+          holidayDate: holiday1.date,
+          holidayDayOfWeek: day1,
+          recommendedDate: bestOption.dates.join(', '),
+          recommendedDay: `${bestOption.ptoNeeded} day${bestOption.ptoNeeded > 1 ? 's' : ''}`,
+          explanation: `→ ${bestOption.totalDays}-day vacation (${getDayAbbr(startDate)}-${getDayAbbr(endDate)})`,
+          isGrouped: true,
+          groupedHolidays: [holiday1.name, holiday2.name],
+          daysToTakeOff: bestOption.ptoNeeded
+        });
       }
     }
     // If holidays are within 1-4 work days apart, suggest bridging them
@@ -328,8 +363,20 @@ export function calculateRecommendations(holidays: Holiday[]): Recommendation[] 
   const clusterRecommendations = findHolidayClusters(validHolidays, holidayDateSet);
   recommendations.push(...clusterRecommendations);
 
+  // Track which holidays are already part of a cluster to avoid duplicates
+  const clusteredHolidayNames = new Set<string>();
+  for (const rec of clusterRecommendations) {
+    if (rec.groupedHolidays) {
+      rec.groupedHolidays.forEach(name => clusteredHolidayNames.add(name));
+    }
+  }
+
   // Process each holiday for single-day recommendations
   for (const holiday of validHolidays) {
+    // Skip if this holiday is already part of a cluster recommendation
+    if (clusteredHolidayNames.has(holiday.name)) {
+      continue;
+    }
     const dayOfWeek = getDayOfWeek(holiday.date);
 
     // Handle Monday holidays - recommend Friday before off
